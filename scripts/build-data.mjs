@@ -5,6 +5,7 @@
 import { readFileSync, writeFileSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { waterAt, nearWater, dryPoint } from "./water.mjs";
 const here = (p) => new URL(p, import.meta.url);
 const P = (p) => here(p).pathname;
 const FIXTURE = "/Users/neelvaanjoshi/Projects/backdoor/evals/fixtures/contact-benchmark-companies.json";
@@ -65,11 +66,19 @@ function place(name, text, known, exact) {
   let area = known || null;
   if (!area) for (const [a, rx] of AREA_RX) if (rx.test(text)) { area = a; break; }
   const key = area || "Bengaluru";
-  // unplaced companies spread over the startup belt (Koramangala–Domlur–Bellandur), not the whole city
-  const [lat, lng] = area ? AREAS[key] : [12.947, 77.647];
   const seed = hash(name);
-  const spread = area ? 0.007 : 0.06;
-  return { area: key, exact: false, lat: +(lat + jitter(seed, spread)).toFixed(5), lng: +(lng + jitter(seed >>> 3, spread)).toFixed(5) };
+  // A company with no confirmed address is anchored to one of the real office localities (chosen by name hash),
+  // offset by a few hundred metres, and never left on water. The card still calls it a city marker.
+  const BELT = ["Koramangala", "HSR Layout", "Indiranagar", "Domlur", "Bellandur", "Kadubeesanahalli", "Marathahalli", "Old Airport Road", "Ejipura", "BTM Layout", "Embassy Tech Village", "Ecoworld", "MG Road", "Whitefield"];
+  const [lat0, lng0] = area ? AREAS[key] : AREAS[BELT[seed % BELT.length]];
+  const spread = area ? 0.006 : 0.0045;
+  let lat = lat0, lng = lng0;
+  for (let k = 0; k < 40; k++) { // re-roll the offset until the spot is dry
+    lat = +(lat0 + jitter(seed + k * 7919, spread)).toFixed(5); lng = +(lng0 + jitter((seed >>> 3) + k * 104729, spread)).toFixed(5);
+    if (!nearWater(lat, lng, 80)) break;
+  }
+  const dry = dryPoint(lat, lng, 80);
+  return { area: key, exact: false, lat: dry.lat, lng: dry.lng };
 }
 
 // logos: assets/logos/<domain>.png -> data URI (downscaled to 96px when large)
@@ -192,7 +201,9 @@ function applyOffice(s) {
   if (o.presence && o.presence !== "verified") out.area = "Bengaluru";
   return out;
 }
-const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map(applyOffice).filter(Boolean).map((s) => ({ ...s, logo: logoFor(s.domain) }))
+const moved = [];
+const landOnly = (s) => { if (!waterAt(s.lat, s.lng)) return s; const d = dryPoint(s.lat, s.lng, 30); moved.push(`${s.name} ${s.lat},${s.lng} -> ${d.lat},${d.lng} (${d.metres} m)`); return { ...s, lat: d.lat, lng: d.lng }; };
+const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map(applyOffice).filter(Boolean).map(landOnly).map((s) => ({ ...s, logo: logoFor(s.domain) }))
   // a recognisable name needs a recognisable mark: in famous-only mode, no logo (or a 16 px favicon) means no pin
   .filter((s) => !FAMOUS_ONLY || (s.logo && s.logo.length > 1400));
 startups.sort((a, b) => b.roles.length - a.roles.length || a.name.localeCompare(b.name));
@@ -213,4 +224,6 @@ writeFileSync(P("../data/startups.json"), JSON.stringify(data));
 console.log("sources:", data.sources, "| companies:", data.counts.startups, "| roles:", data.counts.roles, "| logos:", data.counts.logos, "| areas:", data.counts.areas, "| bytes:", JSON.stringify(data).length);
 console.log("famous:", fam.length, "| in video frame:", inFrame, "| careers-only:", startups.filter((s) => s.careersOnly).length, "| video frame:", box);
 console.log("placement:", { exact: startups.filter((s) => s.exact).length, byLocality: startups.filter((s) => !s.exact && s.area !== "Bengaluru").length, spread: startups.filter((s) => s.area === "Bengaluru").length });
+const wet = startups.filter((s) => waterAt(s.lat, s.lng)); if (wet.length) throw new Error("pins in water: " + wet.map((s) => s.name).join(", "));
+console.log("water check: 0 pins in water;", moved.length ? "nudged off water: " + moved.join("; ") : "no exact pin needed nudging");
 console.log("office status:", Object.fromEntries(["verified", "approximate", "unverified", "remote", "planned"].map((k) => [k, startups.filter((s) => s.loc.status === k).length])));
