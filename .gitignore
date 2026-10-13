@@ -1,0 +1,18 @@
+# generated media and big raw inputs stay out of git
+video/
+raw/roads.json
+raw/tert.json
+raw/water.json
+raw/ov_test.json
+raw/*.log
+raw/index.v*.html
+scripts/rec/node_modules/
+scripts/rec/out/
+scripts/rec/*.mp4
+scripts/rec/*.webm
+scripts/rec/*.wav
+scripts/rec/*.json
+scripts/rec/capture.log
+scripts/rec/package-lock.json
+node_modules/
+.DS_Store

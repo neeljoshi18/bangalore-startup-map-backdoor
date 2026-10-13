@@ -1,0 +1,473 @@
+<title>Backdoor Bengaluru Map</title>
+<meta name="description" content="Every company hiring in Bengaluru, on one map. Ask Backdoor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+<style>
+/* Layout: an iMessage thread with Backdoor on the left (its iOS 26 look, lifted from the
+   Backdoor landing kit), a real basemap of Bengaluru on the right with company logos as pins.
+   Backdoor is light-only; one light look. */
+:root {
+  --bg: #ffffff;
+  --paper: #f3efe8;          /* overridden at runtime by the basemap's own land colour */
+  --ink: #111111;
+  --ink-2: #5f5e5a;
+  --ink-3: #9a978f;
+  --line: #e8e5de;
+  --ghost: #d6252c;
+  --chat-bg: #ffffff;
+  --imsg-blue-start: #62bffb;
+  --imsg-blue-end: #3aa5f6;
+  --imsg-gray: #e9e9eb;
+  --font: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ios: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Inter", system-ui, sans-serif;
+  --spring: cubic-bezier(.34, 1.56, .64, 1);
+  --ease: cubic-bezier(.16, 1, .3, 1);
+  --chat-w: 390px;
+  color-scheme: light;
+}
+html, body { height: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 14px/1.45 var(--font); overflow: hidden; -webkit-font-smoothing: antialiased; }
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+a { color: inherit; }
+img { max-width: 100%; }
+:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 8px; }
+
+/* MapLibre essentials */
+.maplibregl-map { position: relative; overflow: hidden; }
+.maplibregl-canvas-container, .maplibregl-canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+.maplibregl-canvas-container.maplibregl-interactive { cursor: url("assets/ghost-48.png") 24 26, grab; touch-action: none; }
+.maplibregl-canvas-container.maplibregl-interactive:active { cursor: url("assets/ghost-48.png") 24 26, grabbing; }
+.maplibregl-canvas:focus { outline: none; }
+.maplibregl-marker { position: absolute; top: 0; left: 0; will-change: transform; }
+.maplibregl-control-container { display: none; }
+
+#app { position: fixed; inset: 0; display: grid; grid-template-columns: var(--chat-w) 1fr; }
+body.map-only #app { grid-template-columns: 0 1fr; }
+body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
+#chat, .hud { transition: opacity .4s var(--ease); }
+
+/* ---------- iMessage ---------- */
+#chat { position: relative; background: var(--chat-bg); border-right: 1px solid var(--line); display: flex; flex-direction: column; min-width: 0; min-height: 0; z-index: 3; font-family: var(--ios); }
+.ios-glass { position: relative; background: linear-gradient(-75deg, rgba(255,255,255,.62), rgba(255,255,255,.9), rgba(255,255,255,.62)); backdrop-filter: blur(12px) saturate(1.8); -webkit-backdrop-filter: blur(12px) saturate(1.8); box-shadow: inset 0 .12em .12em rgba(255,255,255,.85), inset 0 -.12em .14em rgba(0,0,0,.07), 0 .3em .9em -.3em rgba(0,0,0,.22), 0 .05em .15em rgba(0,0,0,.06); }
+.ios-glass::after { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; background: conic-gradient(from -60deg at 50% 50%, rgba(255,255,255,1), rgba(0,0,0,.13) 14% 36%, rgba(255,255,255,1) 50%, rgba(0,0,0,.13) 64% 86%, rgba(255,255,255,1)); mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); mask-composite: exclude; -webkit-mask-composite: xor; }
+.chead { position: absolute; inset: 0 0 auto 0; height: 96px; z-index: 4; pointer-events: none; }
+.chead .fade { position: absolute; inset: 0; background: linear-gradient(to bottom, #fff, rgba(255,255,255,.85) 55%, transparent); }
+.chead .row { position: relative; display: flex; align-items: flex-start; justify-content: space-between; padding: 12px 12px 0; }
+.chead .back { display: flex; align-items: center; gap: 5px; height: 38px; padding: 0 7px 0 11px; border-radius: 999px; pointer-events: auto; }
+.chead .back .n { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #000; color: #fff; font-size: 12px; font-weight: 600; }
+.chead .who { display: flex; flex-direction: column; align-items: center; }
+.chead .ava { z-index: 1; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; }
+.chead .ava img { width: 30px; height: 30px; }
+.chead .name { margin-top: -7px; display: flex; align-items: center; gap: 3px; padding: 4px 11px; border-radius: 999px; font-size: 12.5px; font-weight: 600; }
+.chead .name svg { color: rgba(0,0,0,.3); }
+.chead .ft { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; pointer-events: auto; }
+
+.thread { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 100px 14px 10px; display: flex; flex-direction: column; justify-content: flex-start; gap: 3px; scrollbar-width: none; }
+.thread::-webkit-scrollbar { display: none; }
+.stamp { margin: 6px 0 8px; text-align: center; font-size: 11px; font-weight: 500; color: rgba(0,0,0,.4); }
+.imsg-row { isolation: isolate; display: flex; animation: bubble .4s var(--spring) backwards; }
+.imsg-row.me { justify-content: flex-end; }
+.imsg-row.them { justify-content: flex-start; }
+.imsg-row + .imsg-row.them, .imsg-row + .imsg-row.me { margin-top: 1px; }
+.imsg-row.them + .imsg-row.me, .imsg-row.me + .imsg-row.them { margin-top: 10px; }
+@keyframes bubble { from { transform: translateY(8px) scale(.96); opacity: 0 } to { transform: none; opacity: 1 } }
+.imsg { position: relative; max-width: 80%; padding: 7px 12px; border-radius: 18px; font-size: 15px; line-height: 1.33; letter-spacing: -.01em; overflow-wrap: anywhere; }
+.imsg-me { background: linear-gradient(to bottom, var(--imsg-blue-start), var(--imsg-blue-end)); color: #fff; }
+.imsg-them { background: var(--imsg-gray); color: #000; }
+.imsg b { font-weight: 600; }
+.imsg-tail.imsg-me { border-bottom-right-radius: 5px; }
+.imsg-tail.imsg-them { border-bottom-left-radius: 5px; }
+.imsg-tail::before, .imsg-tail::after { content: ""; position: absolute; bottom: 0; z-index: -1; height: 17px; }
+.imsg-tail.imsg-me::before { right: -7px; width: 20px; background: var(--imsg-blue-end); border-bottom-left-radius: 16px 14px; }
+.imsg-tail.imsg-me::after { right: -10px; width: 10px; background: var(--chat-bg); border-bottom-left-radius: 10px; }
+.imsg-tail.imsg-them::before { left: -7px; width: 20px; background: var(--imsg-gray); border-bottom-right-radius: 16px 14px; }
+.imsg-tail.imsg-them::after { left: -10px; width: 10px; background: var(--chat-bg); border-bottom-right-radius: 10px; }
+.receipt { text-align: right; font-size: 11px; color: rgba(0,0,0,.4); padding: 1px 6px 0 0; }
+.typing { display: inline-flex; align-items: center; gap: 4px; padding: 11px 13px; }
+.typing i { width: 7px; height: 7px; border-radius: 50%; background: #9a9aa0; animation: dot 1.2s infinite ease-in-out; }
+.typing i:nth-child(2) { animation-delay: .15s } .typing i:nth-child(3) { animation-delay: .3s }
+@keyframes dot { 0%, 60%, 100% { transform: translateY(0); opacity: .5 } 30% { transform: translateY(-3px); opacity: 1 } }
+
+/* company card: a rich message the way iMessage shows a link, inside a grey bubble */
+.cardb { max-width: 90%; padding: 0; overflow: hidden; border-radius: 18px; }
+.cardb .ch { display: flex; gap: 11px; align-items: center; padding: 12px 12px 8px; }
+.tile { width: 44px; height: 44px; border-radius: 12px; background: #fff; border: 1px solid rgba(0,0,0,.06); display: grid; place-items: center; overflow: hidden; flex: none; }
+.tile img { width: 78%; height: 78%; object-fit: contain; display: block; }
+.tile .mono { font: 600 15px/1 var(--font); letter-spacing: -.02em; color: var(--ink); width: 100%; height: 100%; display: grid; place-items: center; }
+.cardb .nm { font-size: 15px; font-weight: 600; line-height: 1.15; }
+.cardb .meta { font-size: 12px; color: rgba(0,0,0,.5); margin-top: 2px; }
+.cardb .tag { padding: 0 12px 10px; font-size: 13px; color: rgba(0,0,0,.72); line-height: 1.35; }
+.cardb .roles { background: #fff; margin: 0 6px; border-radius: 12px; overflow: hidden; }
+.cardb .role { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,.06); text-decoration: none; min-width: 0; }
+.cardb .role:last-child { border-bottom: 0; }
+.cardb .role .t { font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.cardb .role .d { font-size: 11px; color: rgba(0,0,0,.45); white-space: nowrap; }
+.cardb .role svg { flex: none; color: rgba(0,0,0,.3); }
+.cardb .more { display: block; padding: 8px 12px 2px; font-size: 12px; color: rgba(0,0,0,.55); text-decoration: none; }
+.cardb .act { display: flex; gap: 6px; padding: 8px 6px 6px; }
+.btn { height: 36px; padding: 0 14px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; font-weight: 600; font-size: 13px; white-space: nowrap; text-decoration: none; transition: transform .25s var(--spring); }
+.btn:hover { transform: translateY(-1px); }
+.btn.dark { background: #000; color: #fff; flex: 1; }
+.btn.soft { background: #fff; color: #000; }
+.pill { display: inline-flex; align-items: center; height: 18px; padding: 0 6px; border-radius: 999px; font-size: 10.5px; font-weight: 600; background: #fde8e8; color: var(--ghost); white-space: nowrap; margin-left: 6px; vertical-align: 2px; }
+
+/* compose row: a glass + and the glass "iMessage" field; both hand off to Messages */
+.compose { display: flex; align-items: center; gap: 8px; padding: 6px 12px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.compose .plus { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; color: rgba(0,0,0,.7); text-decoration: none; flex: none; }
+.compose .field { flex: 1; display: flex; align-items: center; justify-content: space-between; height: 34px; padding: 0 10px 0 14px; border-radius: 999px; font-size: 14px; color: rgba(0,0,0,.38); text-decoration: none; min-width: 0; }
+.compose .field svg { color: rgba(0,0,0,.4); }
+
+/* ---------- map ---------- */
+#stage { position: relative; min-width: 0; min-height: 0; }
+#map { position: absolute; inset: 0; background: var(--paper); }
+.hud { position: absolute; z-index: 5; }
+#stats { top: 14px; right: 14px; display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 6px 0 10px; background: rgba(255,255,255,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(0,0,0,.08); border-radius: 999px; font-size: 12.5px; color: var(--ink-2); box-shadow: 0 8px 24px -16px rgba(17,17,17,.5); font-variant-numeric: tabular-nums; white-space: nowrap; }
+#stats b { color: var(--ink); font-weight: 600; }
+#stats img { width: 20px; height: 20px; }
+#stats .sep { width: 1px; height: 14px; background: var(--line); }
+#share { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 11px; border-radius: 999px; background: var(--ink); color: #fff; font-size: 12px; font-weight: 600; text-decoration: none; }
+#nav { bottom: 14px; right: 14px; display: flex; flex-direction: column; gap: 4px; }
+#nav button { width: 34px; height: 34px; border-radius: 10px; background: rgba(255,255,255,.94); border: 1px solid rgba(0,0,0,.08); display: grid; place-items: center; color: var(--ink-2); box-shadow: 0 6px 16px -10px rgba(17,17,17,.5); }
+#nav button:hover { color: var(--ink); }
+.attrib { position: absolute; left: 10px; bottom: 8px; z-index: 4; font-size: 10px; color: rgba(0,0,0,.5); background: rgba(255,255,255,.7); padding: 2px 6px; border-radius: 6px; max-width: 60%; }
+.attrib a { text-decoration: none; }
+
+/* logo pins */
+.pin { --s: 44px; width: var(--s); height: var(--s); }
+.pin .in { position: relative; width: 100%; height: 100%; }
+.pin.drop .in { animation: drop .7s var(--spring) backwards; }
+.pin.fade .in, .clu.fade .in { animation: fadein .25s ease-out backwards; }
+@keyframes fadein { from { opacity: 0 } to { opacity: 1 } }
+.pin .tile { width: 100%; height: 100%; border-radius: 24%; border: 1.5px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,.12), 0 8px 18px -8px rgba(0,0,0,.45); transition: transform .25s var(--spring), box-shadow .25s; }
+.pin .tile .mono { font-size: calc(var(--s) * .34); }
+.pin:hover .tile, .pin.sel .tile { transform: translateY(-3px) scale(1.08); box-shadow: 0 2px 4px rgba(0,0,0,.12), 0 14px 26px -10px rgba(0,0,0,.5); }
+.pin.sel .tile { border-color: var(--ghost); box-shadow: 0 0 0 3px rgba(214,37,44,.25), 0 14px 26px -10px rgba(0,0,0,.5); }
+.pin .lbl { position: absolute; top: calc(100% + 6px); left: 50%; transform: translate(-50%, -4px); background: #111; color: #fff; font-size: 11.5px; font-weight: 500; padding: 4px 8px; border-radius: 8px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity .15s, transform .25s var(--spring); }
+.pin .lbl b { font-weight: 600; color: #ffd0c4; }
+.pin:hover .lbl { opacity: 1; transform: translate(-50%, 0); }
+.pin .fresh { position: absolute; top: -4px; right: -4px; width: 11px; height: 11px; border-radius: 50%; background: var(--ghost); border: 2px solid #fff; }
+.pin .peek { position: absolute; left: 50%; bottom: calc(100% - 4px); width: 26px; height: 26px; transform: translate(-50%, 10px) scale(.4); opacity: 0; transition: transform .45s var(--spring), opacity .2s; pointer-events: none; }
+.pin.sel .peek { opacity: 1; transform: translate(-50%, 0) scale(1); }
+@keyframes drop { 0% { transform: translateY(-90%) scale(.3); opacity: 0 } 60% { opacity: 1 } 100% { transform: none; opacity: 1 } }
+
+/* clusters: a fanned stack of logos + count */
+.clu { width: 68px; height: 60px; }
+.clu .in { position: relative; width: 100%; height: 100%; }
+.clu.pop .in { animation: pop .55s var(--spring) backwards; }
+.clu .tile { position: absolute; width: 38px; height: 38px; border-radius: 10px; border: 1.5px solid #fff; box-shadow: 0 6px 14px -6px rgba(0,0,0,.5); transition: transform .25s var(--spring); }
+.clu .tile:nth-child(1) { left: 0; top: 0; z-index: 3; } .clu .tile:nth-child(2) { left: 13px; top: 9px; z-index: 2; } .clu .tile:nth-child(3) { left: 26px; top: 18px; z-index: 1; }
+.clu .tile .mono { font-size: 12px; }
+.clu:hover .tile:nth-child(1) { transform: translate(-4px, -3px) } .clu:hover .tile:nth-child(3) { transform: translate(4px, 3px) }
+.clu .n { position: absolute; right: -2px; bottom: -4px; z-index: 4; background: var(--ghost); color: #fff; font-size: 11.5px; font-weight: 600; padding: 2px 7px; border-radius: 999px; border: 2px solid #fff; box-shadow: 0 4px 10px -4px rgba(168,22,28,.6); font-variant-numeric: tabular-nums; }
+@keyframes pop { 0% { transform: scale(.2); opacity: 0 } 100% { transform: none; opacity: 1 } }
+
+#toast { position: absolute; left: 50%; bottom: 20px; transform: translate(-50%, 10px); z-index: 20; background: #111; color: #fff; padding: 9px 14px; border-radius: 999px; font-size: 13px; opacity: 0; transition: opacity .25s, transform .35s var(--ease); pointer-events: none; white-space: nowrap; }
+#toast.on { opacity: 1; transform: translate(-50%, 0); }
+#fb { position: fixed; inset: 0; z-index: 50; background: rgba(0,0,0,.35); display: none; align-items: center; justify-content: center; padding: 16px; font-family: var(--ios); }
+#fb.on { display: flex; }
+#fb .sheet { position: relative; width: min(100%, 380px); background: #fff; border-radius: 22px; padding: 22px 20px 18px; box-shadow: 0 30px 60px -20px rgba(0,0,0,.5); display: flex; flex-direction: column; gap: 10px; animation: bubble .35s var(--spring); }
+#fb h2 { margin: 4px 0 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em; }
+#fb p { margin: 0; font-size: 13.5px; color: rgba(0,0,0,.6); line-height: 1.4; }
+#fb .quote { background: var(--imsg-gray); border-radius: 16px; padding: 9px 12px; font-size: 14.5px; line-height: 1.35; }
+#fb .row { display: flex; gap: 6px; } #fb .row .btn { flex: 1; background: #f2f2f4; }
+#fb .btn.dark { width: 100%; }
+#fb .x { position: absolute; top: 12px; right: 12px; width: 28px; height: 28px; border-radius: 50%; background: #f2f2f4; font-size: 12px; }
+.cardb .ch { cursor: pointer; width: 100%; text-align: left; }
+.cardb .ch:hover .nm { text-decoration: underline; }
+#loading { position: absolute; inset: 0; z-index: 30; background: var(--paper); display: grid; place-items: center; transition: opacity .8s var(--ease); }
+#loading.off { opacity: 0; pointer-events: none; }
+#loading img { width: 64px; height: 64px; animation: bob 1.6s ease-in-out infinite; }
+@keyframes bob { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+#loading .l { margin-top: 12px; font-size: 12.5px; color: var(--ink-2); text-align: center; }
+
+@media (prefers-reduced-motion: reduce) { * { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
+@media (max-width: 900px) {
+  #app { grid-template-columns: 1fr; grid-template-rows: 46% 1fr; }
+  body.map-only #app { grid-template-rows: 1fr 0; }
+  #stage { order: 0; } #chat { order: 1; border-right: 0; border-top: 1px solid var(--line); }
+  .chead { height: 80px; } .thread { padding-top: 84px; }
+  #stats { top: 10px; right: 10px; left: 10px; justify-content: center; }
+  #nav { bottom: 10px; right: 10px; }
+  .attrib { display: none; }
+}
+</style>
+
+<div id="fb" role="dialog" aria-label="Text Backdoor">
+  <div class="sheet">
+    <img src="assets/imessage.png" alt="" width="44" height="44" style="border-radius:11px">
+    <h2>Text Backdoor on iMessage</h2>
+    <p>Messages didn't open here. Send this to <b id="fb-num">+1 (415) 490-7396</b>:</p>
+    <div class="quote" id="fb-text"></div>
+    <div class="row"><button id="fb-copy-text" class="btn soft">Copy message</button><button id="fb-copy-num" class="btn soft">Copy number</button></div>
+    <a id="fb-open" class="btn dark" rel="noopener" data-src="fallback">Try opening Messages again</a>
+    <button id="fb-close" class="x" aria-label="Close">✕</button>
+  </div>
+</div>
+<div id="app">
+  <aside id="chat" aria-label="iMessage with Backdoor">
+    <div class="chead">
+      <div class="fade"></div>
+      <div class="row">
+        <span class="ios-glass back"><svg width="8" height="13" viewBox="0 0 10 18" aria-hidden="true"><path d="M8.5 1.5L1.5 9l7 7.5" fill="none" stroke="#000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="n">3</span></span>
+        <span class="who"><span class="ios-glass ava"><img src="assets/ghost-256.png" alt=""></span><span class="ios-glass name">Backdoor<svg width="6" height="9" viewBox="0 0 8 12" aria-hidden="true"><path d="M1.5 1.5L6 6l-4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span></span>
+        <span class="ios-glass ft"><svg width="18" height="13" viewBox="0 0 26 18" aria-hidden="true"><rect x="1.2" y="1.8" width="16" height="14.4" rx="3.5" fill="none" stroke="#000" stroke-width="1.9"/><path d="M18.5 7l5.6-3.4v10.8L18.5 11z" fill="none" stroke="#000" stroke-width="1.9" stroke-linejoin="round"/></svg></span>
+      </div>
+    </div>
+    <div class="thread" id="thread" aria-live="polite"></div>
+    <div class="compose">
+      <a class="ios-glass plus" id="plus" rel="noopener" data-src="plus" aria-label="Open in Messages"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></a>
+      <a class="ios-glass field" id="imsg" rel="noopener" data-src="compose" aria-label="Continue in Messages">iMessage<svg width="10" height="15" viewBox="0 0 12 18" aria-hidden="true"><rect x="3" y="1" width="6" height="10" rx="3" fill="currentColor"/><path d="M1 8a5 5 0 0010 0M6 13v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+    </div>
+  </aside>
+
+  <main id="stage">
+    <div id="map" role="application" aria-label="Map of companies hiring in Bengaluru"></div>
+    <div id="stats" class="hud"><img src="assets/ghost-256.png" alt=""><span><b id="st-c">0</b> companies</span><span class="sep"></span><span><b id="st-r">0</b> live roles</span><a id="share" target="_blank" rel="noopener" data-share="map"><svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.9 2H22l-7.3 8.3L23 22h-6.8l-5.3-6.9L4.8 22H1.6l7.8-8.9L1 2h7l4.8 6.3L18.9 2zm-1.2 18h1.9L7.4 3.9H5.4L17.7 20z"/></svg>Share</a></div>
+    <div id="nav" class="hud">
+      <button id="z-in" aria-label="Zoom in"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button id="z-out" aria-label="Zoom out"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+      <button id="home" aria-label="Reset view"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"/></svg></button>
+    </div>
+    <div class="attrib">© <a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> © <a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">OpenMapTiles</a> · Data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors · Roles from each company's live job board</div>
+    <div id="toast" role="status"></div>
+    <div id="loading"><div><img src="assets/ghost-256.png" alt=""><div class="l">Pulling live job boards…</div></div></div>
+  </main>
+</div>
+
+<script>
+(() => {
+  const $ = (s) => document.querySelector(s);
+  const track = (event, props = {}) => {
+    const p = { surface: "bengaluru_map", ...Object.fromEntries(Object.entries(props).filter(([, v]) => v != null && v !== "")) };
+    try { window.bdTrack?.(event, p); } catch {}
+    try { window.visitors?.track?.(event, p); } catch {}
+    try { window.datafast?.(event, Object.fromEntries(Object.entries(p).map(([k, v]) => [k, String(v)]))); } catch {}
+    try { (window.dataLayer = window.dataLayer || []).push({ event, ...p }); } catch {}
+    try { window.plausible?.(event, { props: p }); } catch {}
+    try { window.gtag?.("event", event, p); } catch {}
+    try { window.posthog?.capture?.(event, p); } catch {}
+  };
+  const IMSG = "+14154907396";
+  const PAGE_URL = location.href.split("#")[0];
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const mobile = () => innerWidth <= 900;
+  const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const TINTS = ["#ffd0c4", "#f4d3b1", "#dfe8d3", "#d9e6ef", "#e6def0", "#f8e8b8"];
+  const tint = (name) => { let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return TINTS[h % TINTS.length]; };
+  const initials = (name) => { const w = name.replace(/[^\w\s]/g, "").split(/\s+/).filter(Boolean); return ((w[0]?.[0] || "") + (w[1]?.[0] || w[0]?.[1] || "")).toUpperCase() || "·"; };
+  const ago = (d) => { if (!d) return ""; const days = Math.floor((Date.now() - new Date(d).getTime()) / 864e5); if (days < 1) return "today"; if (days === 1) return "yesterday"; if (days < 14) return days + "d ago"; if (days < 31) return Math.floor(days / 7) + "w ago"; return ""; };
+  const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+  const sms = (text) => `sms:${IMSG}?&body=${encodeURIComponent(text)}`;
+  const hello = sms("Hey Backdoor, I saw the Bengaluru hiring map. I want to work at one of these companies.");
+  const tileHTML = (s) => `<span class="tile" style="${s.logo ? "" : "background:" + tint(s.name)}">${s.logo ? `<img src="${s.logo}" alt="" loading="lazy">` : `<span class="mono">${initials(s.name)}</span>`}</span>`;
+  const clock = () => new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+
+  // ---------- state ----------
+  const state = { data: null, filtered: [], selected: null };
+  const C = { lng: 77.64, lat: 12.955 };
+  const byId = (id) => state.data.startups.find((s) => s.id === id);
+
+  // ---------- map ----------
+  const map = new maplibregl.Map({
+    container: "map", attributionControl: false, antialias: false, fadeDuration: 0, pitchWithRotate: true,
+    center: [C.lng, C.lat], zoom: reduced ? 12.2 : 10.8, pitch: reduced ? 0 : 55, bearing: reduced ? 0 : -20,
+    minZoom: 10, maxZoom: 15.6, maxBounds: [[77.0, 12.45], [78.25, 13.5]],
+    style: { version: 8, sources: {}, layers: [{ id: "bg", type: "background", paint: { "background-color": "#f3efe8" } }] },
+  });
+  map.touchZoomRotate.disableRotation();
+  let mapLoaded = false; map.once("load", () => { mapLoaded = true; });
+  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+  function addBasemap(bm) {
+    if (bm.background) { map.setPaintProperty("bg", "background-color", bm.background); document.documentElement.style.setProperty("--paper", bm.background); }
+    for (const name of ["region", "city", "core"]) {
+      const L = bm.levels[name]; if (!L) continue;
+      map.addSource("bm-" + name, { type: "image", url: L.file, coordinates: L.coordinates });
+      map.addLayer({ id: "bm-" + name, type: "raster", source: "bm-" + name, paint: { "raster-fade-duration": 0, "raster-resampling": "linear" } });
+    }
+    map.addSource("startups", { type: "geojson", data: toFC([]), cluster: true, clusterRadius: 40, clusterMaxZoom: 12.9, promoteId: "id" });
+    map.addLayer({ id: "anchor", type: "circle", source: "startups", paint: { "circle-radius": 1, "circle-opacity": 0 } });
+  }
+  const toFC = (list) => ({ type: "FeatureCollection", features: list.map((s) => ({ type: "Feature", id: s.id, properties: { id: s.id }, geometry: { type: "Point", coordinates: [s.lng, s.lat] } })) });
+
+  // ---------- markers ----------
+  const markers = new Map(); let queued = false, wave = { t0: 0, on: false };
+  const sizeFor = (s) => Math.round(Math.min(64, 42 + Math.sqrt(s.roles.length) * 2.6 + (s.famous ? 4 : 0)));
+  function pinEl(s) {
+    const el = document.createElement("button"); el.className = "pin"; el.style.setProperty("--s", sizeFor(s) + "px"); el.dataset.id = s.id;
+    el.setAttribute("aria-label", `${s.name}, ${s.roles.length ? plural(s.roles.length, "open role") : "hiring"}`);
+    el.innerHTML = `<span class="in">${tileHTML(s)}<img class="peek" src="assets/ghost-256.png" alt=""><span class="lbl">${esc(s.name)} · <b>${s.roles.length ? plural(s.roles.length, "role") : "hiring"}</b></span>${s.fresh ? '<i class="fresh" title="New this week"></i>' : ""}</span>`;
+    if (wave.on) { el.classList.add("drop"); el.firstChild.style.animationDelay = Math.max(0, (s.d * 1.6 - (performance.now() - wave.t0) / 1000)) + "s"; } else el.classList.add("fade");
+    el.addEventListener("mouseenter", () => { el.style.zIndex = 50; }); el.addEventListener("mouseleave", () => { el.style.zIndex = el.classList.contains("sel") ? 40 : ""; });
+    el.addEventListener("click", (e) => { e.stopPropagation(); track("pin_click", { company: s.name }); select(s.id, true); });
+    return el;
+  }
+  function cluEl(f) {
+    const el = document.createElement("button"); el.className = "clu"; const n = f.properties.point_count;
+    el.setAttribute("aria-label", `${n} companies, zoom in`); el.innerHTML = `<span class="in"><span class="n">${n}</span></span>`;
+    if (wave.on) { el.classList.add("pop"); el.firstChild.style.animationDelay = (Math.random() * .8) + "s"; } else el.classList.add("fade");
+    map.getSource("startups").getClusterLeaves(f.properties.cluster_id, 6, 0).then((leaves) => {
+      const w = (l) => { const s = byId(l.properties.id); return (s?.famous ? 1000 : 0) + (s?.roles.length || 0); };
+      leaves.sort((a, b) => w(b) - w(a)); leaves.length = Math.min(3, leaves.length);
+      el.firstChild.insertAdjacentHTML("afterbegin", leaves.map((l) => tileHTML(byId(l.properties.id))).join(""));
+    }).catch(() => {});
+    el.addEventListener("click", async (e) => { e.stopPropagation(); const z = await map.getSource("startups").getClusterExpansionZoom(f.properties.cluster_id); map.easeTo({ center: f.geometry.coordinates, zoom: Math.min(z + .25, 15.4), duration: 900, easing: easeOut }); });
+    return el;
+  }
+  function sync() {
+    const src = map.getSource("startups"); if (!src || !map.isSourceLoaded("startups")) return;
+    const seen = new Set();
+    for (const f of map.querySourceFeatures("startups")) {
+      const key = f.properties.cluster ? "c" + f.properties.cluster_id : "p" + f.properties.id; if (seen.has(key)) continue; seen.add(key);
+      if (markers.has(key)) continue;
+      const s = f.properties.cluster ? null : byId(f.properties.id); if (!f.properties.cluster && !s) continue;
+      const el = f.properties.cluster ? cluEl(f) : pinEl(s);
+      if (s && state.selected === s.id) { el.classList.add("sel"); el.style.zIndex = 40; }
+      markers.set(key, new maplibregl.Marker({ element: el, anchor: "center" }).setLngLat(f.geometry.coordinates).addTo(map));
+    }
+    for (const [k, m] of markers) if (!seen.has(k)) { m.remove(); markers.delete(k); }
+  }
+  map.on("render", () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; sync(); }); });
+
+  // ---------- chat ----------
+  const thread = $("#thread");
+  const scrollDown = () => requestAnimationFrame(() => { thread.scrollTo({ top: thread.scrollHeight, behavior: reduced || window.__capture ? "auto" : "smooth" }); });
+  function add(html, cls) { const el = document.createElement("div"); el.className = cls; el.innerHTML = html; thread.appendChild(el); scrollDown(); return el; }
+  const me = (text) => add(`<div class="imsg imsg-me imsg-tail">${esc(text)}</div>`, "imsg-row me msg");
+  const them = (html) => add(`<div class="imsg imsg-them imsg-tail">${html}</div>`, "imsg-row them msg");
+  let typingEl = null, receiptEl = null;
+  function typing(ms) { typingEl?.remove(); typingEl = add(`<div class="imsg imsg-them imsg-tail typing"><i></i><i></i><i></i></div>`, "imsg-row them"); return new Promise((r) => setTimeout(() => { typingEl?.remove(); typingEl = null; r(); }, reduced ? 0 : ms)); }
+  const countUp = (el, to) => { const t0 = performance.now(), d = reduced ? 1 : 900; (function f(now) { const p = Math.min(1, (now - t0) / d); el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3))); if (p < 1) requestAnimationFrame(f); })(t0); };
+
+  function cardHTML(s) {
+    const roles = s.roles.slice(0, 3), more = s.roles.length - roles.length;
+    const first = s.roles[0]?.title;
+    const ask = `Hey Backdoor, I want to work at ${s.name}${first ? ` as ${first}` : ""}.`;
+    const meta = [s.domain, s.area !== "Bengaluru" ? s.area : "Bengaluru", s.stage].filter(Boolean);
+    return `<div class="imsg imsg-them imsg-tail cardb">
+      <button class="ch" data-fly="${esc(s.id)}" aria-label="Show ${esc(s.name)} on the map">${tileHTML(s)}<div style="min-width:0;text-align:left"><div class="nm">${esc(s.name)}${s.fresh ? '<span class="pill">New this week</span>' : ""}</div><div class="meta">${meta.map(esc).join(" · ")}</div></div></button>
+      <div class="tag">${esc(s.tagline)}</div>
+      ${roles.length ? `<div class="roles">${roles.map((r) => `<a class="role" href="${esc(r.url)}" target="_blank" rel="noopener" data-role-link="${esc(s.name)}" data-title="${esc(r.title)}"><span class="t">${esc(r.title)}</span><span class="d">${esc([r.dept, r.type === "internship" ? "Intern" : "", r.posted ? ago(r.posted) : ""].filter(Boolean).slice(0, 2).join(" · "))}</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>`).join("")}</div>` : ""}
+      ${more > 0 ? `<a class="more" href="${esc(s.board || s.website)}" target="_blank" rel="noopener" data-careers="${esc(s.name)}">+${plural(more, "more Bengaluru role")}${s.totalOpen ? ` · ${s.totalOpen} open worldwide` : ""} →</a>` : s.careersOnly ? `<a class="more" href="${esc(s.board)}" target="_blank" rel="noopener" data-careers="${esc(s.name)}">Open roles on their careers page →</a>` : ""}
+      <div class="act"><a class="btn dark" href="${sms(ask)}" rel="noopener" data-src="card" data-company="${esc(s.name)}" data-role="${esc(first || "")}"><img src="assets/imessage.png" alt="" width="16" height="16" style="border-radius:4px">Get me in</a><a class="btn soft" href="${xHref(s)}" target="_blank" rel="noopener" data-share="company" data-company="${esc(s.name)}">Share</a></div>
+    </div>`;
+  }
+  const slug = (id) => id.replace(/[^A-Za-z0-9._~-]/g, "-");
+  function xHref(s) {
+    const n = state.data.counts;
+    if (!s) return `https://x.com/intent/post?text=${encodeURIComponent(`Backdoor mapped every company hiring in Bengaluru right now: ${n.startups} companies, ${n.roles} live roles, every logo you know, on one map. Tap a logo to see the roles:`)}&url=${encodeURIComponent(PAGE_URL)}`;
+    const top = s.roles.slice(0, 3).map((r) => r.title).join(", ");
+    const text = s.roles.length ? `${s.name} is hiring in Bengaluru: ${plural(s.roles.length, "open role")}${top ? ` (${top}${s.roles.length > 3 ? "…" : ""})` : ""}. Found on Backdoor's live hiring map:` : `${s.name} is hiring in Bengaluru. Found on Backdoor's live hiring map:`;
+    return `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(PAGE_URL + "#" + slug(s.id))}`;
+  }
+  function apply() {
+    state.filtered = state.data.startups;
+    map.getSource("startups")?.setData(toFC(state.filtered));
+    for (const [k, m] of markers) { m.remove(); markers.delete(k); }
+    $("#st-c").textContent = state.filtered.length; $("#st-r").textContent = state.filtered.reduce((n, s) => n + s.roles.length, 0);
+  }
+
+  // ---------- Messages hand-off ----------
+  const IMSG_DISPLAY = "+1 (415) 490-7396";
+  let smsTimer = null;
+  function copy(text, label) { track("copy", { what: label }); const done = () => toast(label + " copied"); const fb = () => { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch { toast(text); } ta.remove(); }; (navigator.clipboard?.writeText(text).then(done, fb)) ?? fb(); }
+  function showFallback(text) {
+    $("#fb-text").textContent = text; $("#fb-copy-text").onclick = () => copy(text, "Message"); $("#fb-copy-num").onclick = () => copy(IMSG, "Number");
+    $("#fb-open").href = sms(text); $("#fb").classList.add("on"); track("imessage_fallback_shown");
+  }
+  $("#fb-close").addEventListener("click", () => $("#fb").classList.remove("on"));
+  document.addEventListener("click", (e) => {
+    const sh = e.target.closest("[data-share]"); if (sh) track("share_click", { scope: sh.dataset.share, company: sh.dataset.company });
+    const rl = e.target.closest("[data-role-link]"); if (rl) track("role_click", { company: rl.dataset.roleLink, title: rl.dataset.title });
+    const cr = e.target.closest("[data-careers]"); if (cr) track("careers_click", { company: cr.dataset.careers });
+    const a = e.target.closest('a[href^="sms:"]'); if (!a) return;
+    track("sms_link_opened", { source: a.dataset.src || "other", company: a.dataset.company, role: a.dataset.role });
+    const text = decodeURIComponent(a.getAttribute("href").split("body=")[1] || "");
+    clearTimeout(smsTimer); smsTimer = setTimeout(() => { if (document.visibilityState === "visible" && document.hasFocus()) showFallback(text); }, 1600);
+  });
+  document.addEventListener("visibilitychange", () => { if (document.hidden) clearTimeout(smsTimer); });
+  let toastT; function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2000); }
+  document.addEventListener("click", (e) => { const b = e.target.closest("[data-fly]"); if (b) select(b.dataset.fly, true); });
+
+  // ---------- select ----------
+  function select(id, fly) {
+    const s = byId(id); if (!s) return;
+    for (const m of markers.values()) { const el = m.getElement(); if (el.classList.contains("pin")) { el.classList.toggle("sel", el.dataset.id === id); el.style.zIndex = el.dataset.id === id ? 40 : ""; } }
+    if (state.selected !== id) { state.selected = id; add(cardHTML(s), "imsg-row them msg"); track("card_open", { company: s.name, roles: s.roles.length, careers_only: !!s.careersOnly }); }
+    if (fly) map.easeTo({ center: [s.lng, s.lat], zoom: Math.max(map.getZoom(), 13.8), duration: 1100, easing: easeOut, offset: mobile() ? [0, -40] : [0, 0] });
+    try { history.replaceState(null, "", "#" + slug(s.id)); } catch {}
+  }
+
+  // ---------- intro / tour / keys ----------
+  let introT = [], tourT = null, touring = false;
+  const later = (ms, fn) => introT.push(setTimeout(fn, reduced ? 0 : ms));
+  function playIntro() {
+    introT.forEach(clearTimeout); introT = []; thread.innerHTML = ""; state.selected = null; touring = false; clearTimeout(tourT);
+    for (const [k, m] of markers) { m.remove(); markers.delete(k); }
+    wave = { t0: performance.now() + 1500, on: true };
+    map.jumpTo({ center: [C.lng, C.lat], zoom: 10.8, pitch: 55, bearing: -20 });
+    add(`<div class="stamp">Today ${clock()}</div>`, "stamp-row");
+    later(500, () => { me("who's hiring in bengaluru right now?"); receiptEl = add(`<div class="receipt">Delivered</div>`, "receipt-row"); });
+    later(1200, () => typing(1300).then(() => { if (receiptEl) receiptEl.firstChild.textContent = "Read " + clock(); them("On it. Pulling every live job board and careers page in the city…"); }));
+    later(1500, () => { const cam = frameCamera(90) || { center: [C.lng, C.lat], zoom: 12.6 }; map.easeTo({ center: cam.center, zoom: cam.zoom, pitch: 0, bearing: 0, duration: 3200, easing: (t) => 1 - Math.pow(1 - t, 4) }); apply(); });
+    later(3300, () => { const n = state.data.counts; const el = them(`<b class="n" id="c1">0</b> companies are hiring, <b class="n" id="c2">0</b> live roles, across <b class="n" id="c3">0</b> neighbourhoods.`); countUp(el.querySelector("#c1"), n.startups); countUp(el.querySelector("#c2"), n.roles); countUp(el.querySelector("#c3"), n.areas); });
+    later(4600, () => { add(`<a class="imsg imsg-them imsg-tail" href="${hello}" rel="noopener" data-src="bubble" style="text-decoration:none">Tap a logo, or tell me what you're looking for.</a>`, "imsg-row them msg"); wave.on = false; track("intro_done", { companies: state.data.counts.startups, roles: state.data.counts.roles }); });
+  }
+  const frameCamera = (pad) => { const b = state.data.videoFrame; if (!b) return null; return map.cameraForBounds([[b[0], b[1]], [b[2], b[3]]], { padding: pad, maxZoom: 13.6 }); };
+  function videoFrame() {
+    const b = state.data.videoFrame; if (!b) return;
+    map.stop();
+    map.fitBounds([[b[0], b[1]], [b[2], b[3]]], { padding: { top: 110, bottom: 110, left: 110, right: 110 }, pitch: 0, bearing: 0, duration: 2000, essential: true, maxZoom: 13.6 });
+  }
+  let tourQueue = [], tourLast = null;
+  function tourNext() {
+    if (!tourQueue.length) {
+      const pool = state.filtered.filter((s) => s.famous && (s.roles.length || s.careersOnly) && s.id !== tourLast);
+      const w = (s) => (s.roles.length ? 2 : 1) + Math.random() * 2;
+      tourQueue = pool.sort((a, b) => w(b) - w(a));
+    }
+    let i = tourQueue.findIndex((s) => !tourLast || Math.hypot((s.lng - byId(tourLast).lng) * 108.5, (s.lat - byId(tourLast).lat) * 111) > .4); if (i < 0) i = 0;
+    return tourQueue.splice(i, 1)[0];
+  }
+  function tourStep() {
+    const s = tourNext(); if (!s) return; tourLast = s.id;
+    map.flyTo({ center: [s.lng, s.lat], zoom: 14.3, pitch: 0, bearing: 0, duration: 1500, curve: 1.2, speed: 1.6, essential: true });
+    setTimeout(() => { if (touring) select(s.id, false); }, 1200);
+    tourT = setTimeout(tourStep, 3100);
+  }
+  function toggleTour() {
+    touring = !touring; clearTimeout(tourT);
+    if (touring) { track("tour_start"); tourQueue = []; tourLast = null; videoFrame(); tourT = setTimeout(tourStep, 2100); }
+    else map.easeTo({ pitch: 0, bearing: 0, duration: 600 });
+  }
+  document.addEventListener("keydown", (e) => {
+    if (e.target.matches("input, textarea")) return;
+    const k = e.key.toLowerCase();
+    if (k === "r") playIntro(); if (k === "p") toggleTour(); if (k === "v") videoFrame();
+    if (k === "h") { document.body.classList.toggle("map-only"); setTimeout(() => map.resize(), 450); }
+  });
+  $("#z-in").addEventListener("click", () => map.zoomIn({ duration: 400 }));
+  $("#z-out").addEventListener("click", () => map.zoomOut({ duration: 400 }));
+  $("#home").addEventListener("click", () => { const cam = frameCamera(90) || { center: [C.lng, C.lat], zoom: 12.6 }; map.easeTo({ center: cam.center, zoom: cam.zoom, pitch: 0, bearing: 0, duration: 1200, easing: easeOut }); });
+  $("#imsg").href = hello; $("#plus").href = hello;
+
+  // ---------- boot ----------
+  async function boot() {
+    const [bm, data] = await Promise.all([fetch("data/basemap.json").then((r) => r.json()), fetch("data/startups.json").then((r) => r.json())]);
+    for (const s of data.startups) s.d = Math.min(1, Math.hypot((s.lng - C.lng), (s.lat - C.lat)) / 0.16);
+    state.data = data; state.filtered = data.startups;
+    $("#share").href = xHref(null);
+    const ready = () => {
+      addBasemap(bm); $("#loading").classList.add("off");
+      playIntro();
+      const h = location.hash.slice(1); if (h) { const s = data.startups.find((x) => slug(x.id) === h); if (s) later(5200, () => select(s.id, true)); }
+    };
+    if (mapLoaded) ready(); else map.once("load", ready);
+  }
+  window.__blr = { map, state, select, playIntro, toggleTour, videoFrame };
+  boot().catch((err) => { $("#loading .l").textContent = "Could not load the map. " + err.message; });
+})();
+</script>
