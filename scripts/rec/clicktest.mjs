@@ -5,7 +5,7 @@ const out = process.argv[2] || ".";
 const b = await chromium.launch({ channel: "chrome", headless: true, args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--hide-scrollbars", "--window-size=1600,900"] });
 const p = await b.newPage({ viewport: { width: 1600, height: 900 } });
 p.on("pageerror", (e) => console.log("pageerror", e.message));
-await p.goto("http://127.0.0.1:8790/standalone.html", { waitUntil: "load" });
+await p.goto("http://127.0.0.1:8790/index.html", { waitUntil: "load" });
 await p.waitForFunction(() => window.__blr?.state.data && document.querySelectorAll(".msg").length >= 4, null, { timeout: 60000 });
 await p.waitForTimeout(2500);
 // open Meesho through the page's own select, then click its pin for real

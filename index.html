@@ -124,6 +124,11 @@ body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
 .cardb .nm { font-size: 15px; font-weight: 600; line-height: 1.15; }
 .cardb .meta { font-size: 12px; color: rgba(0,0,0,.5); margin-top: 2px; }
 .cardb .tag { padding: 0 12px 10px; font-size: 13px; color: rgba(0,0,0,.72); line-height: 1.35; }
+.cardb .loc { margin: -4px 12px 10px; font-size: 11.5px; color: rgba(0,0,0,.5); line-height: 1.35; }
+.cardb .loc.warn { color: #8a5a00; background: #fff6e0; padding: 6px 9px; border-radius: 9px; margin: 0 8px 8px; }
+.cardb .loc a { color: inherit; }
+.pin.approx .tile { border: 1.5px dashed rgba(0,0,0,.35); opacity: .88; }
+.pin.approx .lbl i { font-style: normal; color: #ffd98a; }
 .cardb .roles { background: #fff; margin: 0 6px; border-radius: 12px; overflow: hidden; }
 .cardb .role { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,.06); text-decoration: none; min-width: 0; }
 .cardb .role:last-child { border-bottom: 0; }
@@ -324,9 +329,9 @@ body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
   const markers = new Map(); let queued = false, wave = { t0: 0, on: false };
   const sizeFor = (s) => Math.round(Math.min(64, 42 + Math.sqrt(s.roles.length) * 2.6 + (s.famous ? 4 : 0)));
   function pinEl(s) {
-    const el = document.createElement("button"); el.className = "pin"; el.style.setProperty("--s", sizeFor(s) + "px"); el.dataset.id = s.id;
+    const el = document.createElement("button"); el.className = "pin" + (!s.exact || (s.loc && s.loc.status !== "verified") ? " approx" : ""); el.style.setProperty("--s", sizeFor(s) + "px"); el.dataset.id = s.id;
     el.setAttribute("aria-label", `${s.name}, ${s.roles.length ? plural(s.roles.length, "open role") : "hiring"}`);
-    el.innerHTML = `<span class="in">${tileHTML(s)}<img class="peek" src="assets/ghost-256.png" alt=""><span class="lbl">${esc(s.name)} · <b>${s.roles.length ? plural(s.roles.length, "role") : "hiring"}</b></span>${s.fresh ? '<i class="fresh" title="New this week"></i>' : ""}</span>`;
+    el.innerHTML = `<span class="in">${tileHTML(s)}<img class="peek" src="assets/ghost-256.png" alt=""><span class="lbl">${esc(s.name)} · <b>${s.roles.length ? plural(s.roles.length, "role") : "hiring"}</b>${!s.exact || (s.loc && s.loc.status !== "verified") ? " · <i>location approx.</i>" : ""}</span>${s.fresh ? '<i class="fresh" title="New this week"></i>' : ""}</span>`;
     if (wave.on) { el.classList.add("drop"); el.firstChild.style.animationDelay = Math.max(0, (s.d * 1.6 - (performance.now() - wave.t0) / 1000)) + "s"; } else el.classList.add("fade");
     el.addEventListener("mouseenter", () => { el.style.zIndex = 50; }); el.addEventListener("mouseleave", () => { el.style.zIndex = el.classList.contains("sel") ? 40 : ""; });
     el.addEventListener("click", (e) => { e.stopPropagation(); track("pin_click", { company: s.name }); select(s.id, true); });
@@ -373,10 +378,13 @@ body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
     const roles = s.roles.slice(0, 3), more = s.roles.length - roles.length;
     const first = s.roles[0]?.title;
     const ask = `Hey Backdoor, I want to work at ${s.name}${first ? ` as ${first}` : ""}.`;
-    const meta = [s.domain, s.area !== "Bengaluru" ? s.area : "Bengaluru", s.stage].filter(Boolean);
+    const L = s.loc || { status: s.exact ? "verified" : "approximate" };
+    const where = L.status === "verified" ? (s.area !== "Bengaluru" ? s.area : "Bengaluru") : L.status === "remote" ? "Remote roles · no Bengaluru office" : L.status === "planned" ? "Bengaluru office announced, not open yet" : L.status === "unverified" ? "Bengaluru office unverified" : "Bengaluru · location approximate";
+    const meta = [s.domain, where, s.stage].filter(Boolean);
+    const locLine = L.status === "verified" && L.address ? `<div class="loc"><span>${esc(L.address)}</span>${L.source ? ` · <a href="${esc(L.source)}" target="_blank" rel="noopener">source</a>` : ""}</div>` : L.status === "verified" ? ((L.note || !s.exact) ? `<div class="loc${s.exact ? "" : " warn"}"><span>${esc((L.note || "") + (s.exact ? "" : " The pin is a city marker, not the office."))}</span>${L.source ? ` · <a href="${esc(L.source)}" target="_blank" rel="noopener">source</a>` : ""}</div>` : "") : `<div class="loc warn">${esc(L.note || (L.status === "approximate" ? "No confirmed office address; the pin is placed in the city, not at an office." : L.status === "remote" ? "These roles are listed as remote; the pin is a city marker, not an office." : L.status === "planned" ? "The pin is a city marker until the office opens." : "Could not confirm a Bengaluru office; the pin is a city marker."))}${L.source ? ` <a href="${esc(L.source)}" target="_blank" rel="noopener">source</a>` : ""}</div>`;
     return `<div class="imsg imsg-them imsg-tail cardb">
       <button class="ch" data-fly="${esc(s.id)}" aria-label="Show ${esc(s.name)} on the map">${tileHTML(s)}<div style="min-width:0;text-align:left"><div class="nm">${esc(s.name)}${s.fresh ? '<span class="pill">New this week</span>' : ""}</div><div class="meta">${meta.map(esc).join(" · ")}</div></div></button>
-      <div class="tag">${esc(s.tagline)}</div>
+      <div class="tag">${esc(s.tagline)}</div>${locLine}
       ${roles.length ? `<div class="roles">${roles.map((r) => `<a class="role" href="${esc(r.url)}" target="_blank" rel="noopener" data-role-link="${esc(s.name)}" data-title="${esc(r.title)}"><span class="t">${esc(r.title)}</span><span class="d">${esc([r.dept, r.type === "internship" ? "Intern" : "", r.posted ? ago(r.posted) : ""].filter(Boolean).slice(0, 2).join(" · "))}</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>`).join("")}</div>` : ""}
       ${more > 0 ? `<a class="more" href="${esc(s.board || s.website)}" target="_blank" rel="noopener" data-careers="${esc(s.name)}">+${plural(more, "more Bengaluru role")}${s.totalOpen ? ` · ${s.totalOpen} open worldwide` : ""} →</a>` : s.careersOnly ? `<a class="more" href="${esc(s.board)}" target="_blank" rel="noopener" data-careers="${esc(s.name)}">Open roles on their careers page →</a>` : ""}
       <div class="act"><a class="btn dark" href="${sms(ask)}" rel="noopener" data-src="card" data-company="${esc(s.name)}" data-role="${esc(first || "")}"><img src="assets/imessage.png" alt="" width="16" height="16" style="border-radius:4px">Get me in</a><a class="btn soft" href="${xHref(s)}" target="_blank" rel="noopener" data-share="company" data-company="${esc(s.name)}">Share</a></div>
@@ -423,7 +431,7 @@ body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
   function select(id, fly) {
     const s = byId(id); if (!s) return;
     for (const m of markers.values()) { const el = m.getElement(); if (el.classList.contains("pin")) { el.classList.toggle("sel", el.dataset.id === id); el.style.zIndex = el.dataset.id === id ? 40 : ""; } }
-    if (state.selected !== id) { state.selected = id; add(cardHTML(s), "imsg-row them msg"); track("card_open", { company: s.name, roles: s.roles.length, careers_only: !!s.careersOnly }); }
+    if (state.selected !== id) { state.selected = id; for (const old of thread.querySelectorAll(".imsg-row.card-row")) old.remove(); add(cardHTML(s), "imsg-row them msg card-row"); track("card_open", { company: s.name, roles: s.roles.length, careers_only: !!s.careersOnly }); }
     if (fly) map.easeTo({ center: [s.lng, s.lat], zoom: Math.max(map.getZoom(), 13.8), duration: 1100, easing: easeOut, offset: mobile() ? [0, -40] : [0, 0] });
     try { history.replaceState(null, "", "#" + slug(s.id)); } catch {}
   }

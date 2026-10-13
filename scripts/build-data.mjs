@@ -32,7 +32,7 @@ export const AREAS = {
   "Sahakar Nagar": [13.0620, 77.5830], "Rajarajeshwari Nagar": [12.9270, 77.5190], "Kasavanahalli": [12.9120, 77.6760],
   "Ejipura": [12.9420, 77.6270], "Austin Town": [12.9580, 77.6170], "Benson Town": [13.0030, 77.6000],
   "Lavelle Road": [12.9710, 77.5970], "Residency Road": [12.9700, 77.6030], "Infantry Road": [12.9820, 77.6020],
-  "Shivajinagar": [12.9850, 77.6050], "Vijayanagar": [12.9720, 77.5320], "Adugodi": [12.9430, 77.6100],
+  "Shivajinagar": [12.9850, 77.6050], "Vijayanagar": [12.9720, 77.5320], "Adugodi": [12.9430, 77.6100], "Bagmane Capital": [12.9850, 77.7030], "Old Madras Road": [12.9940, 77.6610], "Cubbon Road": [12.9808, 77.5974],
   "Bengaluru": [12.9716, 77.5946],
 };
 const ALT = { "HSR Layout": "HSR", "BTM Layout": "BTM", "Sarjapur Road": "Sarjapur", "Bannerghatta Road": "Bannerghatta", "Old Airport Road": "HAL", "Ulsoor": "Halasuru", "Manyata Tech Park": "Manyata", "Mahadevapura": "Mahadevpura", "KR Puram": "Krishnarajapuram", "Electronic City": "Electronics City", "Bellandur": "Outer Ring Road|ORR" };
@@ -174,7 +174,25 @@ for (const s of [...scrape, ...fixture, ...db.list]) {
 }
 // FAMOUS_ONLY (default on): the map shows only recognisable names; set FAMOUS_ONLY=0 to keep everything the scraper found.
 const FAMOUS_ONLY = process.env.FAMOUS_ONLY !== "0";
-const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map((s) => ({ ...s, logo: logoFor(s.domain) }))
+// Curated office verification (data/offices.json): per domain {presence, address, area, lat, lng, source, note, drop}.
+// presence: verified | unverified | remote | planned. A verified entry with lat/lng pins exactly; anything else is
+// shown as "location approximate" and never claims a neighbourhood. Entries with drop:true leave the map.
+const OFFICES = existsSync(P("../data/offices.json")) ? JSON.parse(readFileSync(P("../data/offices.json"), "utf8")) : {};
+function applyOffice(s) {
+  const o = OFFICES[s.domain];
+  if (!o) { // no curation: an OSM/Nominatim hit counts as exact, everything else is approximate
+    return { ...s, loc: { status: s.exact ? "verified" : "approximate", basis: s.exact ? "OpenStreetMap office entry" : "no confirmed address", source: s.exact ? "https://www.openstreetmap.org/" : null, address: null } };
+  }
+  if (o.drop) return null;
+  const out = { ...s, loc: { status: o.presence || "verified", basis: o.basis || "", source: o.source || null, address: o.address || null, note: o.note || null } };
+  if (o.lat && o.lng) { out.lat = o.lat; out.lng = o.lng; out.exact = true; out.area = o.area || nearestArea(o.lat, o.lng); }
+  else if (o.keepOsm && s.exact) { out.exact = true; out.area = o.area || s.area; } // research corroborated the OpenStreetMap campus
+  else if (o.presence === "verified" && o.area && AREAS[o.area]) { Object.assign(out, place(s.name, "", o.area, null)); out.exact = false; }
+  else { out.exact = false; out.area = "Bengaluru"; Object.assign(out, place(s.name, "", null, null)); out.area = "Bengaluru"; }
+  if (o.presence && o.presence !== "verified") out.area = "Bengaluru";
+  return out;
+}
+const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map(applyOffice).filter(Boolean).map((s) => ({ ...s, logo: logoFor(s.domain) }))
   // a recognisable name needs a recognisable mark: in famous-only mode, no logo (or a 16 px favicon) means no pin
   .filter((s) => !FAMOUS_ONLY || (s.logo && s.logo.length > 1400));
 startups.sort((a, b) => b.roles.length - a.roles.length || a.name.localeCompare(b.name));
@@ -195,3 +213,4 @@ writeFileSync(P("../data/startups.json"), JSON.stringify(data));
 console.log("sources:", data.sources, "| companies:", data.counts.startups, "| roles:", data.counts.roles, "| logos:", data.counts.logos, "| areas:", data.counts.areas, "| bytes:", JSON.stringify(data).length);
 console.log("famous:", fam.length, "| in video frame:", inFrame, "| careers-only:", startups.filter((s) => s.careersOnly).length, "| video frame:", box);
 console.log("placement:", { exact: startups.filter((s) => s.exact).length, byLocality: startups.filter((s) => !s.exact && s.area !== "Bengaluru").length, spread: startups.filter((s) => s.area === "Bengaluru").length });
+console.log("office status:", Object.fromEntries(["verified", "approximate", "unverified", "remote", "planned"].map((k) => [k, startups.filter((s) => s.loc.status === k).length])));

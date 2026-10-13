@@ -9,7 +9,7 @@ const fps = +fpsS, duration = +durS, tourAt = +tourAtS;
 const events = [];
 let msgs = 0, tourStarted = false;
 const common = {
-  url: "http://127.0.0.1:8790/standalone.html", viewport: { width: 1600, height: 900 }, fps, duration, startDelay: 1.5,
+  url: "http://127.0.0.1:8790/index.html", viewport: { width: 1600, height: 900 }, fps, duration, startDelay: 1.5,
   executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   launchArguments: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--window-size=1600,900", "--hide-scrollbars", "--force-device-scale-factor=1", "--no-sandbox"],
   preparePage: async (page) => {

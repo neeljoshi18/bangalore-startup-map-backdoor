@@ -1,0 +1,660 @@
+{
+ "databricks.com": {
+  "presence": "verified",
+  "address": "Angkor West Building, Bagmane Capital Tech Park, Bengaluru 560048",
+  "geocode": "Bagmane Capital, Mahadevapura, Bengaluru",
+  "basis": "Databricks community meetup listings at the office (Aug 2025) and Databricks press release on its 105,000 sq ft Bagmane Capital R&D office",
+  "source": "https://community.databricks.com/t5/bangalore/gh-p/databricks-community-bangalore-user-grou",
+  "lat": 12.98504,
+  "lng": 77.70297,
+  "geocoded_as": "Bagmane Capital, Bharath Aikya Ward, Bengaluru East City Corporation"
+ },
+ "stripe.com": {
+  "presence": "verified",
+  "address": "Prestige Tech Pacific, Kadubeesanahalli, Bengaluru 560103",
+  "geocode": "Prestige Tech Pacific Park, Kadubeesanahalli, Bengaluru",
+  "basis": "Address on Stripe's Bengaluru job postings",
+  "source": "https://builtinbengaluru.in/company/stripe",
+  "lat": 12.93773,
+  "lng": 77.69544,
+  "geocoded_as": "Prestige Tech Pacific Park, Kaadubeesanahalli, Panathur"
+ },
+ "snowflake.com": {
+  "presence": "verified",
+  "address": "Table Space, 23/2 Coffee Day Square, Vittal Mallya Road, Bengaluru 560001",
+  "geocode": "Vittal Mallya Road, Bengaluru",
+  "basis": "Address on Snowflake's Bengaluru job postings; YourStory reported the Vittal Mallya Road office opening in Aug 2025",
+  "source": "https://yourstory.com/ai-story/snowflake-bengaluru-office-india-expansion",
+  "lat": 12.97125,
+  "lng": 77.59618,
+  "geocoded_as": "Vittal Mallya Road, D'Souza Layout, Shanthala Nagar"
+ },
+ "target.com": {
+  "presence": "verified",
+  "address": "Tower 02, Manyata Embassy Business Park, Nagawara, Bengaluru",
+  "geocode": "Manyata Embassy Business Park, Nagawara, Bengaluru",
+  "basis": "Target's own job postings list Tower 02, Manyata Embassy Business Park; a new 830,000 sq ft building in the same park was leased in 2025",
+  "source": "https://corporate.target.com/careers/job-search/states/karnataka",
+  "lat": 13.04829,
+  "lng": 77.6211,
+  "geocoded_as": "Manyata Tech Park, Kempapura, Bengaluru North City Corporation"
+ },
+ "jupiter.money": {
+  "presence": "verified",
+  "address": "Jupiter HQ, 456, 17th Cross Rd, Sector 4, HSR Layout, Bengaluru 560102",
+  "geocode": "17th Cross Road, Sector 4, HSR Layout, Bengaluru",
+  "basis": "Address in Jupiter's own grievance redressal policy",
+  "source": "https://www.jupiter.money/grievance-redressal-policy",
+  "lat": 12.91226,
+  "lng": 77.6412,
+  "geocoded_as": "17th Cross Road, MCHS Colony, Sector 4"
+ },
+ "zeptonow.com": {
+  "presence": "verified",
+  "address": "Market Square Mall (ex Total Mall), Sarjapur Road, Bengaluru (reported)",
+  "geocode": "Market Square Mall, Sarjapur Road, Bengaluru",
+  "basis": "HQ moved from Mumbai to Bengaluru in 2024-25; the Sarjapur Road location comes from press reports, not a Zepto page",
+  "source": "https://therealtytoday.com/news/zepto-to-relocate-headquarters-to-total-mall-in-sarjapur-bengaluru-report",
+  "note": "Reported HQ location; Zepto has not published the address.",
+  "geocoded_as": "Market Square Mall, Madiwala Sarjapura Road, Sidhartha Colony",
+  "lat": 12.92186,
+  "lng": 77.62039
+ },
+ "pocketfm.com": {
+  "presence": "verified",
+  "address": "20th Main Road, KHB Colony, Koramangala Industrial Layout, Bengaluru 560034",
+  "geocode": "Koramangala Industrial Layout, Bengaluru",
+  "basis": "Corporate office per PitchBook and CB Insights (house number differs between them)",
+  "source": "https://pitchbook.com/profiles/company/431337-16",
+  "geocoded_as": "Gillys 104 Bar, 70, Jyoti Nivas College Rd",
+  "lat": 12.93329,
+  "lng": 77.61471
+ },
+ "dailyhunt.in": {
+  "presence": "verified",
+  "address": "Mantri Commercio, Outer Ring Road, Bellandur, Bengaluru 560103",
+  "geocode": "Mantri Commercio, Outer Ring Road, Bellandur, Bengaluru",
+  "basis": "VerSe Innovation (Dailyhunt) HQ per company directories; VerSe itself says it is headquartered in Bengaluru",
+  "source": "https://builtinbengaluru.in/company/verse-innovation",
+  "lat": 12.93228,
+  "lng": 77.68372,
+  "geocoded_as": "Mantri Commercio, Bellanduru, Bellandur"
+ },
+ "cred.club": {
+  "presence": "verified",
+  "address": "100 Feet Road, HAL 2nd Stage, Indiranagar, Bengaluru 560038",
+  "area": "Indiranagar",
+  "basis": "Main office per Clay's company dossier; matches the OpenStreetMap entry",
+  "source": "https://www.clay.com/dossier/cred-headquarters-office-locations",
+  "keepOsm": true
+ },
+ "figma.com": {
+  "presence": "verified",
+  "basis": "Figma opened its Bengaluru office on 12 Nov 2025 (Figma blog); the street address is not published",
+  "source": "https://www.figma.com/blog/figma-india-office/",
+  "note": "Office confirmed by Figma; exact address not published."
+ },
+ "anthropic.com": {
+  "presence": "verified",
+  "basis": "Anthropic opened its Bengaluru office in Feb 2026 (Business Today, Outlook Business); the street address is not published",
+  "source": "https://www.businesstoday.in/technology/story/anthropic-opens-new-office-in-bengaluru-announces-partnerships-across-india-516332-2026-02-16",
+  "note": "Office confirmed; exact address not published."
+ },
+ "okta.com": {
+  "presence": "verified",
+  "basis": "Okta's own page announces its Bengaluru innovation centre and Indian headquarters; no street address given",
+  "source": "https://www.okta.com/company/bengaluru-office/",
+  "note": "Office confirmed by Okta; exact address not published."
+ },
+ "airbnb.com": {
+  "presence": "verified",
+  "basis": "Airbnb announced its Bengaluru technology hub in March 2022 (Airbnb newsroom); no street address published",
+  "source": "https://news.airbnb.com/en-in/new-bengaluru-tech-hub-to-be-part-of-airbnbs-ongoing-investment-in-india%EF%BF%BC",
+  "note": "Tech hub confirmed; exact address not published."
+ },
+ "uber.com": {
+  "presence": "verified",
+  "basis": "Uber's careers site describes its Bengaluru office (~200 people); a new Bellandur campus is planned by 2027; current street address not found",
+  "source": "https://www.uber.com/careers/locations/bangalore/",
+  "note": "Office confirmed; current address not published."
+ },
+ "twilio.com": {
+  "presence": "verified",
+  "basis": "Twilio's engineering centre in Bengaluru (Twilio blog); address not published",
+  "source": "https://www.twilio.com/en-us/blog/research-and-development-in-bengaluru",
+  "note": "R&D office confirmed; exact address not published."
+ },
+ "paytm.com": {
+  "presence": "verified",
+  "basis": "Paytm has had Bengaluru offices since 2017 (HSR Layout, Bannerghatta Road, Koramangala per press) and its Bengaluru roles are listed on its board; current site not confirmed",
+  "source": "https://www.exchange4media.com/advertising-news/paytm-opens-new-office-in-bengaluruaggressive-hiring-plans-underway-68399.html",
+  "note": "Several Bengaluru offices reported; which one is current is not confirmed."
+ },
+ "sarvam.ai": {
+  "presence": "verified",
+  "basis": "Sarvam AI is Bengaluru-based (company directories give pincode 560067, no street)",
+  "source": "https://builtinbengaluru.in/company/sarvam",
+  "note": "Bengaluru-based; street address not published."
+ },
+ "openai.com": {
+  "presence": "planned",
+  "basis": "OpenAI's India office is in New Delhi (opened Aug 2025); a Bengaluru office was announced in Feb 2026 for later in the year; its Bengaluru-tagged roles are listed as remote",
+  "source": "https://inc42.com/buzz/openai-to-expand-india-presence-with-mumbai-bengaluru-offices/",
+  "note": "Office is in New Delhi; a Bengaluru office is announced but not confirmed open. The roles here are tagged remote."
+ },
+ "gitlab.com": {
+  "presence": "remote",
+  "basis": "GitLab is all-remote; its 'Bangalore' roles are remote with a location restriction",
+  "source": "https://jobs.generalcatalyst.com/companies/gitlab-com/jobs/33747254-mid-market-account-executive-india-bangalore-or-mumbai",
+  "note": "All-remote company; these roles are remote, there is no office."
+ },
+ "elastic.co": {
+  "presence": "unverified",
+  "basis": "Distributed company; a Bengaluru office (Embassy Golf Links) appears only in an unsourced aggregator",
+  "source": "https://www.ownyourcareer.in/companies/elastic",
+  "note": "Remote-first company; Bengaluru office location not confirmed."
+ },
+ "mongodb.com": {
+  "presence": "unverified",
+  "basis": "MongoDB's India office is in Gurugram (MongoDB press release); it lists Bengaluru roles but no Bengaluru office was found",
+  "source": "https://mongodb.com/company/newsroom/press-releases/mongodb-opens-india-office-heart-cyber-city",
+  "note": "India office is in Gurugram; a Bengaluru office could not be confirmed."
+ },
+ "coinbase.com": {
+  "presence": "unverified",
+  "basis": "Coinbase announced a Hyderabad office and Bengaluru-based leadership in 2021-22; its current Bengaluru role is 'Hybrid - Bangalore'; no office address found",
+  "source": "https://www.businesstoday.in/amp/crypto/story/coinbase-to-hire-dedicated-team-for-ma-and-investments-in-india-329077-2022-04-07",
+  "note": "Hybrid Bengaluru role listed; office location not confirmed."
+ },
+ "zomato.com": {
+  "presence": "unverified",
+  "basis": "Eternal/Zomato is headquartered in Gurugram; headcount data shows ~129 Bengaluru employees but no office address was found; the OpenStreetMap match was dropped",
+  "source": "https://en.wikipedia.org/wiki/Eternal_Limited",
+  "note": "HQ is Gurugram; a Bengaluru office could not be confirmed."
+ },
+ "blinkit.com": {
+  "presence": "unverified",
+  "basis": "Blinkit's corporate office is in Gurugram; only dark stores and delivery onboarding points were found in Bengaluru; the OpenStreetMap match was a store",
+  "source": "https://pitchbook.com/profiles/company/96145-66",
+  "note": "Corporate office is Gurugram; no Bengaluru office confirmed (dark stores only)."
+ },
+ "github.com": {
+  "drop": true,
+  "basis": "GitHub had Bengaluru and Hyderabad offices in 2020 and laid off its India engineering team in 2023; no current Bengaluru roles or office could be confirmed",
+  "source": "https://qz.com/india/1802161/microsofts-github-to-open-offices-in-bengaluru-hyderabad"
+ },
+ "nvidia.com": {
+  "presence": "verified",
+  "address": "Memphis South Tower, Bagmane Capital, Mahadevapura, Bengaluru (from Apr 2026); earlier at Manyata Embassy Business Park",
+  "geocode": "Bagmane Capital, Mahadevapura, Bengaluru",
+  "basis": "2026 lease reports for twelve floors of Memphis South Tower, Bagmane Capital; an older directory lists Manyata",
+  "source": "https://newskarnataka.com/bengaluru/nvidia-leases-7-6-lakh-sq-ft-office-in-bengaluru-for-ai-growth/29042026/",
+  "note": "New campus at Bagmane Capital; the earlier Manyata office may still operate.",
+  "lat": 12.98504,
+  "lng": 77.70297,
+  "geocoded_as": "Bagmane Capital, Bharath Aikya Ward, Bengaluru East City Corporation"
+ },
+ "purestorage.com": {
+  "presence": "verified",
+  "basis": "Pure Storage job postings require working from its Bengaluru office; no street address found; the OpenStreetMap Church Street match was dropped as unsourced",
+  "source": "https://apna.co/job/1114161023",
+  "note": "Office confirmed; exact address not published."
+ },
+ "qualcomm.com": {
+  "presence": "verified",
+  "address": "Virgo Tower, Bagmane Constellation Business Park, Mahadevapura (lease from Aug 2026); also Bagmane Capital-Angkor",
+  "geocode": "Bagmane Constellation Business Park, Mahadevapura, Bengaluru",
+  "basis": "2026 lease report for Bagmane Constellation; 2023 reports for Bagmane Capital-Angkor; the OpenStreetMap Hoodi match was dropped",
+  "source": "https://therealtytoday.com/news/commercial/semiconductor-giant-qualcomm-leases-256-lakh-sq-ft-at-bagmane-constellation-for-184-cr/",
+  "lat": 12.9813,
+  "lng": 77.69691,
+  "geocoded_as": "Bagmane Constellation Business Park, Dodda Nekkundi, Bengaluru East City Corporation"
+ },
+ "amd.com": {
+  "presence": "verified",
+  "address": "Plot 102 & 103, Export Promotion Industrial Park, Whitefield, Bengaluru 560066 (registered office); design centre at Prestige Technostar",
+  "geocode": "Export Promotion Industrial Park, Whitefield, Bengaluru",
+  "basis": "AMD India's registered office on an AMD CSR document; the 2023 design-centre opening was reported at Prestige Technostar, Whitefield",
+  "source": "https://www.amd.com/content/dam/amd/en/documents/corporate/cr/composition-of-csr-committee-aipl.pdf",
+  "lat": 12.97819,
+  "lng": 77.72465,
+  "geocoded_as": "EPIP Zone, Bharath Aikya Ward, Bengaluru East City Corporation"
+ },
+ "postman.com": {
+  "presence": "verified",
+  "address": "Building 310, 6th Main Road, Indiranagar, Bengaluru 560038",
+  "geocode": "6th Main Road, HAL 2nd Stage, Indiranagar, Bengaluru",
+  "basis": "Postman's official contact page",
+  "source": "https://getpostman.com/company/contact-us/",
+  "lat": 12.97037,
+  "lng": 77.64531,
+  "geocoded_as": "12th Main Road, HAL 2nd Stage, Kodihalli"
+ },
+ "atlassian.com": {
+  "presence": "verified",
+  "basis": "Atlassian announced its permanent Bengaluru office in 2019 (Atlassian press release); it started in a temporary space at Embassy Golf Links and the current address is not published",
+  "source": "https://www.atlassian.com/company/news/press-releases/atlassian-opens-new-office-in-bengaluru-india",
+  "note": "Office confirmed; current address not published."
+ },
+ "rippling.com": {
+  "presence": "verified",
+  "address": "Embassy Tech Village, Bellandur, Bengaluru",
+  "geocode": "Embassy Tech Village, Bellandur, Bengaluru",
+  "basis": "Rippling's own announcement of its 100,000 sq ft Embassy Tech Village office (May 2025)",
+  "source": "https://www.rippling.com/blog/rippling-expands-india-office",
+  "lat": 12.93069,
+  "lng": 77.69142,
+  "geocoded_as": "Embassy TechVillage, Devarabeesanahalli, Shivanasamudra Ward"
+ },
+ "navi.com": {
+  "presence": "verified",
+  "address": "Vaishnavi Tech Square, Ibbaluru, Bellandur, Bengaluru 560103",
+  "geocode": "Vaishnavi Tech Square, Bellandur, Bengaluru",
+  "basis": "Business Standard reported Navi's 412,000 sq ft lease at Vaishnavi Tech Square (2023); directories list it as HQ",
+  "source": "https://www.business-standard.com/india-news/vaishnavi-group-leases-over-4-lakh-sq-ft-office-space-to-navi-technologies-123051700928_1.html",
+  "lat": 12.92659,
+  "lng": 77.66596,
+  "geocoded_as": "Vaishnavi Tech Square, 6th Main Road, Suncity Apartments"
+ },
+ "sliceit.com": {
+  "presence": "verified",
+  "address": "No. 9 Ashford Park View, 80 Feet Road, Koramangala 3rd Block, Bengaluru 560034",
+  "geocode": "80 Feet Road, Koramangala 3rd Block, Bengaluru",
+  "basis": "Corporate office per PitchBook (registered office is in Guwahati after the bank merger)",
+  "source": "https://pitchbook.com/profiles/company/153720-37",
+  "lat": 12.9339,
+  "lng": 77.63015,
+  "geocoded_as": "80 Feet Road, Green Leaf Layout, Kormangala East"
+ },
+ "udaan.com": {
+  "presence": "verified",
+  "address": "TWA SJR The Hub, Sarjapur-Marathahalli Road, Bellandur, Bengaluru",
+  "basis": "HQ per CB Insights and Uplers; Udaan's own site says it is headquartered in Bengaluru",
+  "source": "https://www.cbinsights.com/company/udaan",
+  "area": "Bellandur"
+ },
+ "linkedin.com": {
+  "presence": "verified",
+  "basis": "LinkedIn inaugurated a new Bengaluru office in 2026 (press); earlier sites were Global Technology Park (2016) and Bagmane Tech Park (2011); current building not named; the OpenStreetMap Ecoworld match could not be confirmed",
+  "source": "https://newskarnataka.com/business/linkedin-opens-new-bengaluru-office-bets-big-on-india-growth/30062026/",
+  "note": "Office confirmed; current address not published."
+ },
+ "jpmorgan.com": {
+  "presence": "verified",
+  "address": "Embassy TechVillage (Block 8D), Outer Ring Road, Bellandur, Bengaluru",
+  "geocode": "Embassy TechVillage, Bellandur, Bengaluru",
+  "basis": "JPMorgan Chase's 2023 announcement of its 1.1M sq ft Embassy TechVillage hub (Business Wire); block from a lease report",
+  "source": "https://businesswire.com/news/home/20230807498167/en/5499823/JPMorgan-Chase-Opens-New-Offices-in-Mumbai-and-Bengaluru",
+  "lat": 12.93069,
+  "lng": 77.69142,
+  "geocoded_as": "Embassy TechVillage, Devarabeesanahalli, Shivanasamudra Ward"
+ },
+ "morganstanley.com": {
+  "presence": "verified",
+  "address": "Ecoworld Campus 6A & 8B, Sarjapur-Marathahalli Outer Ring Road, Bengaluru 560103",
+  "geocode": "RMZ Ecoworld, Bellandur, Bengaluru",
+  "basis": "Morgan Stanley's official India offices page",
+  "source": "https://www.morganstanley.com/about-us/global-offices/asia-pacific/india/about-us",
+  "lat": 12.92981,
+  "lng": 77.68463,
+  "geocoded_as": "RMZ Ecoworld Internal Road, Devarabeesanahalli, Shivanasamudra Ward"
+ },
+ "zscaler.com": {
+  "presence": "verified",
+  "address": "#101 Shreshtha Bhoomi, No. 87, 1st Floor, K.R. Road, Bengaluru 560004",
+  "geocode": "K.R. Road, Basavanagudi, Bengaluru",
+  "basis": "Corporate office address on Zscaler's Bengaluru job postings; the OpenStreetMap Adugodi match was dropped",
+  "source": "https://builtinbengaluru.in/job/principal-software-development-engineer/7650254",
+  "lat": 12.93869,
+  "lng": 77.58,
+  "geocoded_as": "Rashtriya Vidyalaya Road, Basavanagudi, Sunkenahalli"
+ },
+ "salesforce.com": {
+  "presence": "verified",
+  "address": "Umiya Business Bay, Kadubeesanahalli (current, per employee reports); new tower at Bagmane Tech Park, Mahadevapura, due 2026",
+  "basis": "Salesforce's India expansion announcements name the Bagmane Tech Park tower; the current Kadubeesanahalli site matches the OpenStreetMap entry and employee reports",
+  "source": "https://www.salesforce.com/in/news/stories/salesforce-delivers-growth-expands-presence-in-india/",
+  "note": "Moving to a new Bagmane Tech Park tower in 2026.",
+  "keepOsm": true
+ },
+ "paypal.com": {
+  "presence": "verified",
+  "address": "Sources differ: OpenStreetMap lists PayPal at Ecoworld; a directory lists RGA Techpark 1, Sarjapur-Marathahalli Road, Varthur 560035",
+  "basis": "PayPal's Bengaluru roles are on its board; office address conflicts between sources, so the pin uses the OpenStreetMap entry",
+  "source": "https://builtinbengaluru.in/company/paypal",
+  "note": "Office confirmed; sources disagree on the building.",
+  "keepOsm": true
+ },
+ "unacademy.com": {
+  "presence": "verified",
+  "address": "Domlur, Inner Ring Road area (directories disagree on the building: 100 Feet Road vs Maruti Infotech Centre)",
+  "basis": "Headquartered in Bengaluru (Wikipedia); Domlur addresses in Clay and PitchBook match the OpenStreetMap entry",
+  "source": "https://clay.com/dossier/unacademy-headquarters-office-locations",
+  "keepOsm": true
+ },
+ "rapido.bike": {
+  "presence": "verified",
+  "address": "Salarpuria Softzone, Wing C, Block A, Bellandur, Bengaluru 560103 (per directory)",
+  "basis": "Headquartered in Bengaluru (Wikipedia); the Salarpuria Softzone address comes from a company profile and sits next to the OpenStreetMap 'Rapido Office' entry",
+  "source": "https://en.wikipedia.org/wiki/Rapido_(company)",
+  "keepOsm": true
+ },
+ "practo.com": {
+  "presence": "verified",
+  "address": "Bannerghatta Road (WeWork Salarpuria Symbiosis per Mergr; OpenStreetMap lists Practo Technologies at 26 Bannerghatta Road)",
+  "basis": "Headquartered in Bengaluru; two sources point to Bannerghatta Road, one older one to Koramangala 3rd Block",
+  "source": "https://mergr.com/company/practo",
+  "keepOsm": true
+ },
+ "porter.in": {
+  "presence": "verified",
+  "basis": "Porter (SmartShift Logistics) is headquartered in Bengaluru (Wikipedia); directories give three different addresses, so none is shown and the OpenStreetMap BTM match was dropped",
+  "source": "https://en.wikipedia.org/wiki/Porter_(company)",
+  "note": "HQ in Bengaluru; address unconfirmed."
+ },
+ "walmart.com": {
+  "presence": "verified",
+  "address": "Salarpuria Touchstone, Kadubeesanahalli, Outer Ring Road (job postings); also Cessna Business Park; new Devanahalli site from 2026",
+  "geocode": "Salarpuria Touchstone, Kadubeesanahalli, Bengaluru",
+  "basis": "Walmart Global Tech job postings give the Kadubeesanahalli office; a Dec 2025 lease report covers the Devanahalli expansion",
+  "source": "https://builtinbengaluru.in/job/software-engineer-iii/4210236",
+  "lat": 12.93703,
+  "lng": 77.69055,
+  "geocoded_as": "Salarpuria Touchstone, Kaadubeesanahalli, Panathur"
+ },
+ "cult.fit": {
+  "presence": "verified",
+  "basis": "Curefit Healthcare is headquartered in Bengaluru (directories); no street address published",
+  "source": "https://builtinbengaluru.in/company/curefit",
+  "note": "HQ in Bengaluru; address not published."
+ },
+ "bigbasket.com": {
+  "presence": "verified",
+  "address": "2nd Floor, Fairway Business Park, Embassy Golf Links Road, Challaghatta, Bengaluru 560071",
+  "geocode": "Fairway Business Park, Challaghatta, Bengaluru",
+  "basis": "HQ per CB Insights and Bitscale (the entity is Innovative Retail Concepts)",
+  "source": "https://www.cbinsights.com/company/supermarket-grocery-supplies",
+  "lat": 12.95193,
+  "lng": 77.6428,
+  "geocoded_as": "Fairway Business Park, Yamalur, Bengaluru East City Corporation"
+ },
+ "healthifyme.com": {
+  "presence": "verified",
+  "address": "No. 30, 80 Feet Road, HAL 3rd Stage, Indiranagar, Bengaluru",
+  "geocode": "80 Feet Road, HAL 3rd Stage, Indiranagar, Bengaluru",
+  "basis": "Corporate office per PitchBook and Craft (sources differ only on the pincode)",
+  "source": "https://pitchbook.com/profiles/company/98415-37",
+  "lat": 12.97656,
+  "lng": 77.6467,
+  "geocoded_as": "80 Feet Road, Old Thippasandra, Thippasandra"
+ },
+ "scaler.com": {
+  "presence": "verified",
+  "address": "9th Floor, Sakti Statesman, Green Glen Layout, Bellandur, Bengaluru 560103",
+  "geocode": "Sakti Statesman, Green Glen Layout, Bellandur, Bengaluru",
+  "basis": "InterviewBit/Scaler's official contact page",
+  "source": "https://www.interviewbit.com/pages/contact_us/",
+  "lat": 12.92364,
+  "lng": 77.66765,
+  "geocoded_as": "Sakti Statesman, 7th Main Road, Iblur"
+ },
+ "sharechat.com": {
+  "presence": "verified",
+  "address": "North Tower, Smartworks Vaishnavi Tech Park, Ambalipura, Varthur Hobli, Bengaluru 560103",
+  "geocode": "Vaishnavi Tech Park, Sarjapur Road, Bellandur, Bengaluru",
+  "basis": "Mohalla Tech (ShareChat) address per Uplers, A-Leads and Bitscale directories",
+  "source": "https://www.uplers.com/company/sharechat-5353",
+  "lat": 12.92019,
+  "lng": 77.67187,
+  "geocoded_as": "Vaishnavi Tech Park, Iblur, Shivanasamudra Ward"
+ },
+ "ultrahuman.com": {
+  "presence": "verified",
+  "basis": "Ultrahuman is headquartered in Bengaluru (Wikipedia, Dealroom); no street address published",
+  "source": "https://en.wikipedia.org/wiki/Ultrahuman",
+  "note": "HQ in Bengaluru; address not published."
+ },
+ "vedantu.com": {
+  "presence": "verified",
+  "address": "D. No. 1081, 3rd Floor, Vistar Arcade, 14th Main Road, Sector 3, HSR Layout, Bengaluru 560102",
+  "geocode": "14th Main Road, Sector 3, HSR Layout, Bengaluru",
+  "basis": "Corporate office per PitchBook, CB Insights and Clay",
+  "source": "https://pitchbook.com/profiles/company/103391-02",
+  "lat": 12.9075,
+  "lng": 77.63806,
+  "geocoded_as": "14th Main Road, Sector 3, HSR Layout"
+ },
+ "olakrutrim.com": {
+  "presence": "verified",
+  "address": "8th Floor, Wing C, Prestige RMZ Startech, Hosur Road, Koramangala, Bengaluru 560095",
+  "geocode": "RMZ Startech, Hosur Road, Koramangala, Bengaluru",
+  "basis": "Krutrim's address per Built In and Dealroom profiles; Krutrim says its teams work from Bangalore, Singapore and San Francisco",
+  "source": "https://builtinbengaluru.in/company/krutrim",
+  "lat": 12.9316,
+  "lng": 77.61557,
+  "geocoded_as": "Prestige RMZ Startech, 2, Kormangala West"
+ },
+ "dell.com": {
+  "presence": "verified",
+  "address": "Salarpuria Tech Point, Intermediate Ring Road, Bengaluru 560047 (office); registered office at Embassy Golf Links, Domlur",
+  "geocode": "Salarpuria Tech Point, Intermediate Ring Road, Bengaluru",
+  "basis": "Dell job postings for the Intermediate Ring Road office; Dell's own support page lists the Embassy Golf Links registered office",
+  "source": "https://www.dell.com/support/contents/en-in/article/contact-information/registered-office-address",
+  "lat": 12.93767,
+  "lng": 77.6283,
+  "geocoded_as": "American Express, Salarpuria tech point, The oasis center 5th Floor"
+ },
+ "swiggy.com": {
+  "presence": "verified",
+  "address": "I & J Block, Ground Floor, Embassy Tech Village, Outer Ring Road, Devarabisanahalli, Bengaluru 560103",
+  "geocode": "Embassy TechVillage, Bellandur, Bengaluru",
+  "basis": "Head office address on Swiggy's own corporate and investor pages",
+  "source": "https://swiggy.com/investor-relations",
+  "lat": 12.93069,
+  "lng": 77.69142,
+  "geocoded_as": "Embassy TechVillage, Devarabeesanahalli, Shivanasamudra Ward"
+ },
+ "groww.in": {
+  "presence": "verified",
+  "address": "South Tower, 3rd Floor, Vaishnavi Tech Park, Sarjapur Main Road, Bellandur, Bengaluru 560103",
+  "geocode": "Vaishnavi Tech Park, Sarjapur Road, Bellandur, Bengaluru",
+  "basis": "HQ and registered office per CB Insights, Hyring and other directories (parent: Billionbrains Garage Ventures)",
+  "source": "https://www.cbinsights.com/investor/groww",
+  "lat": 12.92019,
+  "lng": 77.67187,
+  "geocoded_as": "Vaishnavi Tech Park, Iblur, Shivanasamudra Ward"
+ },
+ "meesho.com": {
+  "presence": "verified",
+  "basis": "Headquartered in Bengaluru (Wikipedia); directories give three different buildings (100 Feet Road Koramangala, Outer Ring Road Bellandur, Helios Business Park Kadubeesanahalli), so no address is shown",
+  "source": "https://www.clay.com/dossier/meesho-headquarters-office-locations",
+  "note": "HQ in Bengaluru; sources disagree on the building."
+ },
+ "myntra.com": {
+  "presence": "verified",
+  "address": "Begonia & Clover, Embassy Tech Village, Outer Ring Road, Devarabeesanahalli, Bengaluru (moved from AKR Tech Park, Kudlu Gate, in 2020)",
+  "geocode": "Embassy TechVillage, Bellandur, Bengaluru",
+  "basis": "CB Insights lists the Embassy Tech Village HQ; a Jan 2020 report covered the move from Kudlu Gate to Outer Ring Road",
+  "source": "https://in.fashionnetwork.com/news/Myntra-to-shift-Bengaluru-office-to-new-space,1179297.html",
+  "lat": 12.93069,
+  "lng": 77.69142,
+  "geocoded_as": "Embassy TechVillage, Devarabeesanahalli, Shivanasamudra Ward"
+ },
+ "google.com": {
+  "presence": "verified",
+  "address": "Ananta campus, Bagmane, Outer Ring Road, Mahadevapura (also Kyoto campus at Bagmane Capital and RMZ Infinity, Old Madras Road)",
+  "basis": "Google inaugurated Ananta in Mahadevapura in Feb 2025 (YourStory, Deccan Herald); other campuses per the same coverage; matches the OpenStreetMap Bagmane entry",
+  "source": "https://yourstory.com/2025/02/google-unveils-ananta-one-of-largest-office-mahadevpura-bengaluru",
+  "keepOsm": true
+ },
+ "microsoft.com": {
+  "presence": "verified",
+  "address": "Prestige Ferns Galaxy, Ambalipura, Outer Ring Road, Bengaluru 560103 (also Lavelle Road)",
+  "basis": "Microsoft's official India contact page",
+  "source": "https://www.microsoft.com/en-in/about/contact-us",
+  "keepOsm": true
+ },
+ "amazon.com": {
+  "presence": "verified",
+  "address": "Taurus 3, Bagmane Constellation Business Park, Mahadevapura (plus other Bagmane buildings; a new campus near the airport opened in 2026)",
+  "basis": "Amazon's official India corporate-offices page names Bagmane Constellation as its largest Bengaluru campus; matches the OpenStreetMap Mahadevapura entry",
+  "source": "https://aboutamazon.in/workplace/corporate-offices",
+  "keepOsm": true
+ },
+ "apple.com": {
+  "presence": "verified",
+  "address": "Prestige Minsk Square, Cubbon Road (central Bengaluru); a second office leased on Sankey Road in 2025",
+  "geocode": "Minsk Square, Cubbon Road, Bengaluru",
+  "basis": "2020 lease and 2024 opening reports for the 15-floor Minsk Square office (Business Today, Asianet)",
+  "source": "https://www.businesstoday.in/latest/corporate/story/apple-signs-4-lakh-sq-ft-office-space-in-bengaluru-274572-2020-10-03",
+  "lat": 12.98081,
+  "lng": 77.59737,
+  "geocoded_as": "Minsk Square, Cubbon Road, Sampangirama Nagar"
+ },
+ "oracle.com": {
+  "presence": "verified",
+  "address": "Krishna Magnum, Billekahalli, Begur Hobli (Bannerghatta Road area), Bengaluru 560076; also Oracle Tech Hub, Bellandur",
+  "basis": "Oracle's official India field-offices page",
+  "source": "https://www.oracle.com/in/corporate/contact/field-offices",
+  "keepOsm": true
+ },
+ "olacabs.com": {
+  "presence": "verified",
+  "address": "#414, 3rd Floor, Regent Insignia, 4th Block, 17th Main, 100 Feet Road, Koramangala, Bengaluru 560034",
+  "basis": "HQ per Wikipedia and Clay; matches the OpenStreetMap Koramangala entry",
+  "source": "https://en.wikipedia.org/wiki/Ola_Consumer",
+  "keepOsm": true
+ },
+ "samsung.com": {
+  "presence": "verified",
+  "address": "Bagmane Constellation Business Park, Doddanekundi (main office since 2012); also Bagmane World Technology Centre, Mahadevapura",
+  "basis": "Wikipedia on Samsung R&D Institute India-Bangalore; lease reports for Bagmane WTC; matches the OpenStreetMap entry",
+  "source": "https://en.wikipedia.org/wiki/Samsung_R%26D_Institute_India,_Bengaluru",
+  "keepOsm": true
+ },
+ "cisco.com": {
+  "presence": "verified",
+  "address": "SEZ Unit, Cessna Business Park, Kadubeesanahalli, Sarjapur-Marathahalli Outer Ring Road, Bengaluru 560103",
+  "basis": "Cisco's official office locator and Experience Center page",
+  "source": "https://www.cisco.com/site/us/en/about/contact-cisco/global-office-locations.html",
+  "keepOsm": true
+ },
+ "ibm.com": {
+  "presence": "verified",
+  "address": "Manyata Embassy Business Park, Outer Ring Road, Nagawara, Bengaluru 560045; a further 1.6 lakh sq ft leased at Embassy GolfLinks in 2025",
+  "basis": "Office directories for Manyata (matches the OpenStreetMap entry) and 2025 lease registration reports for Embassy GolfLinks",
+  "source": "https://therealtytoday.com/news/commercial/ibm-india-takes-16-lakh-sq-ft-office-at-embassy-golflinks-bengaluru-for-24-crore-monthly-rent/",
+  "keepOsm": true
+ },
+ "intel.com": {
+  "presence": "verified",
+  "address": "Intel India campus (44 acres), Sarjapur Ring Road (SRR), Bengaluru",
+  "basis": "Intel's expansion announcements for the SRR campus (Deccan Herald, VentureBeat); matches the OpenStreetMap entry on the Outer Ring Road",
+  "source": "https://www.deccanherald.com/business/intel-invest-rs-1100-cr-2009599",
+  "keepOsm": true
+ },
+ "sap.com": {
+  "presence": "verified",
+  "address": "#138, EPIP Zone, Whitefield, Bengaluru 560066 (a second campus opened in Devanahalli)",
+  "basis": "SAP's official office-locations page",
+  "source": "https://www.sap.com/about/company/office-locations/india.html",
+  "keepOsm": true
+ },
+ "goldmansachs.com": {
+  "presence": "verified",
+  "address": "Embassy Golf Links Business Park, off Intermediate Ring Road, Domlur, Bengaluru",
+  "basis": "Multiple listings place the Goldman Sachs offices in Embassy Golf Links Business Park; matches the OpenStreetMap entry; building not confirmed",
+  "source": "https://www.expedia.com/Goldman-Sachs-Offices-Embassy-Golf-Links-Business-Park.d6138940.Vacation-Attraction",
+  "keepOsm": true
+ },
+ "intuit.com": {
+  "presence": "verified",
+  "address": "EcoSpace, Campus 4A/6A/8, Pritech Road, Adarsh Palm Retreat, Bellandur, Bengaluru 560103",
+  "geocode": "Pritech Park, Bellandur, Bengaluru",
+  "basis": "Intuit India's official contact page",
+  "source": "https://www.intuit.com/in/company/contact",
+  "lat": 12.92107,
+  "lng": 77.68074,
+  "geocoded_as": "Hinduja Global Solutions, (HGS), Building 14"
+ },
+ "adobe.com": {
+  "presence": "verified",
+  "address": "Prestige Platina Technology Park, Building 1, Block A, Kadubeesanahalli, Bengaluru (also Prestige Tech Park IV)",
+  "basis": "Adobe's official office listings",
+  "source": "https://www.adobe.com/company/contact/offices.html",
+  "keepOsm": true
+ },
+ "freshworks.com": {
+  "presence": "verified",
+  "address": "Units 701-702, RMZ Infinity Tower D, 3 Old Madras Road, Benniganahalli, Bengaluru 560016",
+  "geocode": "RMZ Infinity, Old Madras Road, Bengaluru",
+  "basis": "Freshworks' 2018 press release for the Old Madras Road office and the address on its job postings; the OpenStreetMap Ecoworld match was dropped",
+  "source": "https://www.freshworks.com/press-release/freshworks-bangalore-office",
+  "lat": 12.99439,
+  "lng": 77.66084,
+  "geocoded_as": "EY, RMZ Infinity, Swamy Vivekananda Road"
+ },
+ "zeta.tech": {
+  "presence": "verified",
+  "basis": "Zeta (Better World Technology) is Bengaluru-based per Inc42 and YourStory profiles; no street address published; the OpenStreetMap Old Airport Road match was dropped as unsourced",
+  "source": "https://inc42.com/company/zeta",
+  "note": "Bengaluru-based; address not published."
+ },
+ "razorpay.com": {
+  "presence": "verified",
+  "keepOsm": true,
+  "address": "1st Floor, SJR Cyber, 22 Laskar Hosur Road, Adugodi, Bengaluru 560030",
+  "basis": "Razorpay's own website lists this as its Bengaluru headquarters; matches the OpenStreetMap entry",
+  "source": "https://razorpay.com/about/"
+ },
+ "phonepe.com": {
+  "presence": "verified",
+  "address": "Salarpuria Softzone, Green Glen Layout, Bellandur, Bengaluru 560103",
+  "geocode": "Salarpuria Softzone, Bellandur, Bengaluru",
+  "basis": "Headquarters per Wikipedia and company directories",
+  "source": "https://en.wikipedia.org/wiki/PhonePe",
+  "lat": 12.92423,
+  "lng": 77.67054,
+  "geocoded_as": "Salarpuria Softzone, Iblur, Bellandur"
+ },
+ "flipkart.com": {
+  "presence": "verified",
+  "address": "Alyssa, Begonia and Clover buildings, Embassy Tech Village, Outer Ring Road, Devarabeesanahalli, Bengaluru 560103",
+  "geocode": "Embassy TechVillage, Bellandur, Bengaluru",
+  "basis": "HQ per GlobalData and Devex; YourStory covered the 2018 move into Embassy Tech Village",
+  "source": "https://yourstory.com/2018/04/flipkart-finds-new-bigger-home-bengaluru",
+  "lat": 12.93069,
+  "lng": 77.69142,
+  "geocoded_as": "Embassy TechVillage, Devarabeesanahalli, Shivanasamudra Ward"
+ },
+ "nobroker.in": {
+  "presence": "verified",
+  "address": "374, 23rd Cross Road, HSR Layout, Bengaluru 560102",
+  "geocode": "23rd Cross Road, Sector 2, HSR Layout, Bengaluru",
+  "basis": "HQ per three company directories (Built In, Bitscale, Uplers); the earlier Nominatim match on Sarjapur Road was dropped",
+  "source": "https://builtin.com/company/nobroker",
+  "lat": 12.90857,
+  "lng": 77.64592,
+  "geocoded_as": "23rd Cross Road, Parangipalya, Sector 2"
+ },
+ "rubrik.com": {
+  "presence": "verified",
+  "address": "7th Floor, Building 9, SEZ Cessna Business Park, Kadubeesanahalli, Outer Ring Road, Bengaluru 560087",
+  "geocode": "Cessna Business Park, Kadubeesanahalli, Bengaluru",
+  "basis": "Rubrik's official contact page",
+  "source": "https://rubrik.com/it/contact-sales",
+  "lat": 12.9352,
+  "lng": 77.6945,
+  "geocoded_as": "Cessna Business Park (OpenStreetMap entry for the park)"
+ },
+ "juspay.in": {
+  "presence": "verified",
+  "address": "Stallion Business Center, 444, 18th Main Road, 6th Block, Koramangala, Bengaluru 560095",
+  "geocode": "18th Main Road, 6th Block, Koramangala, Bengaluru",
+  "basis": "HQ per Craft, Datanyze and other directories; matches the Nominatim entry for Juspay Technologies",
+  "source": "https://craft.co/juspay",
+  "lat": 12.94159,
+  "lng": 77.62311,
+  "geocoded_as": "18th Main Road, Koramangala 6th Block, Koramangala"
+ }
+}

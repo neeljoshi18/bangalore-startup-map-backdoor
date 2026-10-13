@@ -86,6 +86,19 @@ cd ~/Desktop/BITS_GOA_2026-27/OOPS/backdoor-blr-map && (python3 -m http.server 8
 The last argument of capture.mjs is the virtual second at which the tour starts. It uses the installed
 Google Chrome (`executablePath` in the script) with SwiftShader, so it runs without a GPU.
 
+## Office verification
+
+`data/offices.json` is a hand-checked table, one entry per company: `presence` (verified | unverified |
+remote | planned), the address when a reliable source gives one, the source URL, and a note. Sources are the
+company's own contact/office pages where they exist, otherwise press reports of leases and openings, and
+company directories (PitchBook, CB Insights, Clay, Built In) as a last resort. `scripts/geocode-offices.mjs`
+turns addresses into coordinates by landmark; `keepOsm: true` keeps the OpenStreetMap office entry when the
+research corroborated it; `drop: true` removes a company (GitHub: no current Bengaluru roles or office found).
+Build order: offices.json overrides the geocoder. On the page, a company whose office exists but whose address
+is not published, or whose office could not be confirmed, gets a dashed pin, a "location approx." label and a
+yellow note on its card saying what is and is not known, with the source linked. A pin is never placed at a
+specific building unless the address came from a source.
+
 ## iMessage panel
 
 The left column copies Backdoor's own iOS 26 iMessage kit (glass header with back/unread, avatar and name pill,

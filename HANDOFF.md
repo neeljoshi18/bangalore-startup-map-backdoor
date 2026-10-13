@@ -37,6 +37,15 @@ MessageCTA uses, so the Reddit "Lead" mapping applies; `imessage_fallback_shown`
 `card_open` {company, roles, careers_only}; `share_click` {scope: map|company, company}; `role_click`
 {company, title}; `careers_click` {company}; `tour_start`; `intro_done` {companies, roles}; `copy` {what}.
 
+## Office locations
+
+Every pin rests on `data/offices.json`, checked by hand against company pages, lease/opening reports or
+directories, with the source URL stored per company and shown on the card. Companies whose Bengaluru office
+could not be confirmed (Zomato, Blinkit, Coinbase, MongoDB, Elastic), all-remote ones (GitLab) and OpenAI
+(New Delhi office, Bengaluru office announced but not confirmed open; its "Bengaluru" roles are remote) are
+kept on the map but shown with a dashed pin, a "location approx." label and a note. GitHub was removed: no
+current Bengaluru roles or office. When you learn a better address, edit offices.json and rebuild.
+
 ## Refreshing the data
 
 ```bash

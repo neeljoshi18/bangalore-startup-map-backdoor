@@ -1,0 +1,11 @@
+import { createRequire } from "node:module";
+const { chromium } = createRequire(import.meta.url)("playwright");
+const b = await chromium.launch({ channel: "chrome", headless: true, args: ["--use-gl=angle", "--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist", "--hide-scrollbars", "--window-size=1400,800"] });
+const p = await b.newPage({ viewport: { width: 1400, height: 800 } });
+const errs = []; p.on("pageerror", (e) => errs.push(e.message)); p.on("console", (m) => { if (m.type() === "error" && !/favicon/.test(m.text())) errs.push(m.text().slice(0, 120)); });
+await p.goto("https://neeljoshi18.github.io/bangalore-startup-map-backdoor/", { waitUntil: "load" });
+await p.waitForFunction(() => window.__blr?.state.data && document.querySelectorAll(".msg").length >= 4, null, { timeout: 90000 });
+await p.waitForTimeout(2500);
+console.log(JSON.stringify({ pins: await p.$$eval(".pin", (n) => n.length), clusters: await p.$$eval(".clu", (n) => n.length), mapLoaded: await p.evaluate(() => window.__blr.map.loaded()), share: await p.$eval("#share", (a) => decodeURIComponent(a.href)).then((s) => s.slice(-70)), errors: errs }));
+await p.screenshot({ path: "/private/tmp/claude-501/-Users-neelvaanjoshi-Desktop-BITS-GOA-2026-27-OOPS/d9c33367-1d82-493a-8af5-36fd440f235a/scratchpad/live.png" });
+await b.close();
