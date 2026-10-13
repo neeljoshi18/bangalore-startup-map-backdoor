@@ -94,9 +94,9 @@ company's own contact/office pages where they exist, otherwise press reports of 
 company directories (PitchBook, CB Insights, Clay, Built In) as a last resort. `scripts/geocode-offices.mjs`
 turns addresses into coordinates by landmark; `keepOsm: true` keeps the OpenStreetMap office entry when the
 research corroborated it; `drop: true` removes a company (GitHub: no current Bengaluru roles or office found).
-Build order: offices.json overrides the geocoder. On the page, a company whose office exists but whose address
-is not published, or whose office could not be confirmed, gets a dashed pin, a "location approx." label and a
-yellow note on its card saying what is and is not known, with the source linked. A pin is never placed at a
+Build order: offices.json overrides the geocoder. The build keeps only companies whose `presence` is `verified`;
+unverified, remote-only and planned offices are dropped. A confirmed office whose address is not published gets a
+dashed pin anchored to a locality, a "location approx." label and a grey note with the source linked. A pin is never placed at a
 specific building unless the address came from a source.
 
 ## iMessage panel

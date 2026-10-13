@@ -204,7 +204,8 @@ function applyOffice(s) {
 const moved = [];
 // every pin, sourced or not, keeps at least 60 m from a water edge so a logo tile never overlaps a lake
 const landOnly = (s) => { if (!nearWater(s.lat, s.lng, 60)) return s; const d = dryPoint(s.lat, s.lng, 60); moved.push(`${s.name} ${s.lat},${s.lng} -> ${d.lat},${d.lng} (${d.metres} m)`); return { ...s, lat: d.lat, lng: d.lng }; };
-const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map(applyOffice).filter(Boolean).map(landOnly).map((s) => ({ ...s, logo: logoFor(s.domain) }))
+// Only companies with a confirmed Bengaluru office make the map. Unverified, remote-only and announced-but-not-open ones are dropped.
+const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map(applyOffice).filter(Boolean).filter((s) => s.loc.status === "verified").map(landOnly).map((s) => ({ ...s, logo: logoFor(s.domain) }))
   // a recognisable name needs a recognisable mark: in famous-only mode, no logo (or a 16 px favicon) means no pin
   .filter((s) => !FAMOUS_ONLY || (s.logo && s.logo.length > 1400));
 startups.sort((a, b) => b.roles.length - a.roles.length || a.name.localeCompare(b.name));
