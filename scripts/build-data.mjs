@@ -202,7 +202,8 @@ function applyOffice(s) {
   return out;
 }
 const moved = [];
-const landOnly = (s) => { if (!waterAt(s.lat, s.lng)) return s; const d = dryPoint(s.lat, s.lng, 30); moved.push(`${s.name} ${s.lat},${s.lng} -> ${d.lat},${d.lng} (${d.metres} m)`); return { ...s, lat: d.lat, lng: d.lng }; };
+// every pin, sourced or not, keeps at least 60 m from a water edge so a logo tile never overlaps a lake
+const landOnly = (s) => { if (!nearWater(s.lat, s.lng, 60)) return s; const d = dryPoint(s.lat, s.lng, 60); moved.push(`${s.name} ${s.lat},${s.lng} -> ${d.lat},${d.lng} (${d.metres} m)`); return { ...s, lat: d.lat, lng: d.lng }; };
 const startups = [...byDomain.values()].filter((s) => !FAMOUS_ONLY || s.famous).map(applyOffice).filter(Boolean).map(landOnly).map((s) => ({ ...s, logo: logoFor(s.domain) }))
   // a recognisable name needs a recognisable mark: in famous-only mode, no logo (or a 16 px favicon) means no pin
   .filter((s) => !FAMOUS_ONLY || (s.logo && s.logo.length > 1400));
