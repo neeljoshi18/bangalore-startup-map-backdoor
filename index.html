@@ -387,7 +387,7 @@ body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
       <div class="tag">${esc(s.tagline)}</div>${locLine}
       ${roles.length ? `<div class="roles">${roles.map((r) => `<a class="role" href="${esc(r.url)}" target="_blank" rel="noopener" data-role-link="${esc(s.name)}" data-title="${esc(r.title)}"><span class="t">${esc(r.title)}</span><span class="d">${esc([r.dept, r.type === "internship" ? "Intern" : "", r.posted ? ago(r.posted) : ""].filter(Boolean).slice(0, 2).join(" · "))}</span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M7 17 17 7M8 7h9v9"/></svg></a>`).join("")}</div>` : ""}
       ${more > 0 ? `<a class="more" href="${esc(s.board || s.website)}" target="_blank" rel="noopener" data-careers="${esc(s.name)}">+${plural(more, "more Bengaluru role")}${s.totalOpen ? ` · ${s.totalOpen} open worldwide` : ""} →</a>` : s.careersOnly ? `<a class="more" href="${esc(s.board)}" target="_blank" rel="noopener" data-careers="${esc(s.name)}">Open roles on their careers page →</a>` : ""}
-      <div class="act"><a class="btn dark" href="${sms(ask)}" rel="noopener" data-src="card" data-company="${esc(s.name)}" data-role="${esc(first || "")}"><img src="assets/imessage.png" alt="" width="16" height="16" style="border-radius:4px">Get me in</a><a class="btn soft" href="${xHref(s)}" target="_blank" rel="noopener" data-share="company" data-company="${esc(s.name)}">Share</a></div>
+      <div class="act"><a class="btn dark" href="https://backdoorai.app/?utm_source=bengaluru-map&utm_medium=card&utm_content=${encodeURIComponent(s.domain)}" target="_blank" rel="noopener" data-cta="${esc(s.name)}"><img src="assets/ghost-256.png" alt="" width="18" height="18">Get me in</a><a class="btn soft" href="${xHref(s)}" target="_blank" rel="noopener" data-share="company" data-company="${esc(s.name)}">Share</a></div>
     </div>`;
   }
   const slug = (id) => id.replace(/[^A-Za-z0-9._~-]/g, "-");
@@ -416,6 +416,7 @@ body.map-only #chat, body.map-only .hud { opacity: 0; pointer-events: none; }
   $("#fb-close").addEventListener("click", () => $("#fb").classList.remove("on"));
   document.addEventListener("click", (e) => {
     const sh = e.target.closest("[data-share]"); if (sh) track("share_click", { scope: sh.dataset.share, company: sh.dataset.company });
+    const cta = e.target.closest("[data-cta]"); if (cta) track("cta_clicked", { company: cta.dataset.cta, destination: "backdoorai.app" });
     const rl = e.target.closest("[data-role-link]"); if (rl) track("role_click", { company: rl.dataset.roleLink, title: rl.dataset.title });
     const cr = e.target.closest("[data-careers]"); if (cr) track("careers_click", { company: cr.dataset.careers });
     const a = e.target.closest('a[href^="sms:"]'); if (!a) return;

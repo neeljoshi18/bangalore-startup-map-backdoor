@@ -7,7 +7,7 @@ runtime except MapLibre (unpkg) and Inter (Google Fonts). It can live at `backdo
 
 - iMessage thread with Backdoor on the left (our iOS 26 kit from `app/_components/landing/IMessage.tsx`),
   a real Bengaluru basemap on the right with company logos as pins (83 recognisable names, ~830 live roles).
-- Every "Get me in", the compose row, the "+" and Backdoor's last bubble open Messages to the public line
+- "Get me in" on each card opens backdoorai.app (utm_source=bengaluru-map, utm_content=<domain>; event `cta_clicked`). The compose row, the "+" and Backdoor's last bubble open Messages to the public line
   (`+14154907396`, from `/api/public-line`) with `Hey Backdoor, I want to work at <Company> as <Role>.`
   If Messages does not open (Android, in-app browsers) a sheet shows the number and the message with copy buttons.
 - Share buttons compose tweets: the top one for the map, each card for that company's roles with a `#<domain>`

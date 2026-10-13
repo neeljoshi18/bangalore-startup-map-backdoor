@@ -108,7 +108,7 @@ the glass "+" and "iMessage" compose row). There is no text input on the page: t
 
 ## Messaging and analytics
 
-Every call to action opens iMessage via `sms:+14154907396?&body=Hey Backdoor, I want to work at <Company> as <Role>.`
+"Get me in" on each card opens https://backdoorai.app (with utm_source=bengaluru-map and the company as utm_content). The compose row, the + and Backdoor's last bubble still open iMessage via `sms:+14154907396?&body=Hey Backdoor, I want to work at <Company> as <Role>.`
 (the number comes from the live site's `/api/public-line`). If Messages does not open within ~1.6 s (Android,
 in-app browsers, sandboxed frames) a sheet shows the number and the message with copy buttons.
 Every meaningful click is tracked through `window.visitors.track` / `window.datafast` (the Backdoor app's globals),
